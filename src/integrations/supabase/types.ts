@@ -14,7 +14,244 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      answers: {
+        Row: {
+          attempt_id: string
+          created_at: string
+          given_answer: string | null
+          id: string
+          is_correct: boolean | null
+          question_id: string
+          time_spent: number | null
+        }
+        Insert: {
+          attempt_id: string
+          created_at?: string
+          given_answer?: string | null
+          id?: string
+          is_correct?: boolean | null
+          question_id: string
+          time_spent?: number | null
+        }
+        Update: {
+          attempt_id?: string
+          created_at?: string
+          given_answer?: string | null
+          id?: string
+          is_correct?: boolean | null
+          question_id?: string
+          time_spent?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "answers_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attempts: {
+        Row: {
+          approved: boolean | null
+          correct_count: number | null
+          exam_id: string
+          finished_at: string | null
+          id: string
+          member_id: string
+          started_at: string
+          total_time: number | null
+          wrong_count: number | null
+        }
+        Insert: {
+          approved?: boolean | null
+          correct_count?: number | null
+          exam_id: string
+          finished_at?: string | null
+          id?: string
+          member_id: string
+          started_at?: string
+          total_time?: number | null
+          wrong_count?: number | null
+        }
+        Update: {
+          approved?: boolean | null
+          correct_count?: number | null
+          exam_id?: string
+          finished_at?: string | null
+          id?: string
+          member_id?: string
+          started_at?: string
+          total_time?: number | null
+          wrong_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attempts_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attempts_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      certificates: {
+        Row: {
+          attempt_id: string
+          cert_number: string
+          id: string
+          issued_at: string
+        }
+        Insert: {
+          attempt_id: string
+          cert_number: string
+          id?: string
+          issued_at?: string
+        }
+        Update: {
+          attempt_id?: string
+          cert_number?: string
+          id?: string
+          issued_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificates_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: true
+            referencedRelation: "attempts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exams: {
+        Row: {
+          allow_back: boolean
+          created_at: string
+          description: string | null
+          id: string
+          is_published: boolean
+          level: string
+          title: string
+          total_time: number
+        }
+        Insert: {
+          allow_back?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean
+          level?: string
+          title: string
+          total_time?: number
+        }
+        Update: {
+          allow_back?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean
+          level?: string
+          title?: string
+          total_time?: number
+        }
+        Relationships: []
+      }
+      members: {
+        Row: {
+          coach_name: string
+          created_at: string
+          id: string
+          level: string | null
+          membership_no: string
+          name: string
+          status: string
+          whatsapp: string
+        }
+        Insert: {
+          coach_name: string
+          created_at?: string
+          id?: string
+          level?: string | null
+          membership_no: string
+          name: string
+          status?: string
+          whatsapp: string
+        }
+        Update: {
+          coach_name?: string
+          created_at?: string
+          id?: string
+          level?: string | null
+          membership_no?: string
+          name?: string
+          status?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          correct_answer: string
+          created_at: string
+          exam_id: string
+          group_no: number
+          id: string
+          image_url: string | null
+          marks: number
+          order_no: number
+          question_text: string | null
+          time_limit: number
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string
+          exam_id: string
+          group_no?: number
+          id?: string
+          image_url?: string | null
+          marks?: number
+          order_no?: number
+          question_text?: string | null
+          time_limit?: number
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string
+          exam_id?: string
+          group_no?: number
+          id?: string
+          image_url?: string | null
+          marks?: number
+          order_no?: number
+          question_text?: string | null
+          time_limit?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
