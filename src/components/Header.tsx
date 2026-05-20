@@ -50,6 +50,7 @@ export function Header({ variant = "public" }: { variant?: "public" | "member" |
           <Link to="/admin/members" onClick={() => setOpen(false)}><Button variant="ghost" size="sm" className="rounded-full w-full sm:w-auto">المشتركين</Button></Link>
           <Link to="/admin/exams" onClick={() => setOpen(false)}><Button variant="ghost" size="sm" className="rounded-full w-full sm:w-auto">الاختبارات</Button></Link>
           <Link to="/admin/analytics" onClick={() => setOpen(false)}><Button variant="ghost" size="sm" className="rounded-full w-full sm:w-auto">التحليلات</Button></Link>
+          <Link to="/admin/certificates" onClick={() => setOpen(false)}><Button variant="ghost" size="sm" className="rounded-full w-full sm:w-auto">الشهادات</Button></Link>
           <Button variant="outline" size="sm" onClick={logout} className="rounded-full w-full sm:w-auto">
             <LogOut className="ml-1 h-4 w-4" /> خروج
           </Button>

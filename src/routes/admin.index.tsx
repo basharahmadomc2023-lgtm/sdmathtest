@@ -43,7 +43,7 @@ function Dash() {
     { label: "المقبولين", value: stats.approved, icon: CheckCircle2, link: "/admin/members", tone: "from-emerald-500 to-teal-500" },
     { label: "الاختبارات", value: stats.exams, icon: FileText, link: "/admin/exams", tone: "from-sky-500 to-cyan-500" },
     { label: "الاختبارات المنجزة", value: stats.attempts, icon: BarChart3, link: "/admin/analytics", tone: "from-indigo-500 to-violet-500" },
-    { label: "الشهادات", value: stats.certs, icon: Award, link: "/admin/analytics", tone: "from-amber-500 to-orange-500" },
+    { label: "الشهادات", value: stats.certs, icon: Award, link: "/admin/certificates", tone: "from-amber-500 to-orange-500" },
     { label: "متوسط النتائج", value: `${stats.avg}%`, icon: TrendingUp, link: "/admin/analytics", tone: "from-rose-500 to-pink-500" },
   ];
 
