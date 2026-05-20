@@ -19,6 +19,7 @@ import { Route as CertificateCertNumberRouteImport } from './routes/certificate.
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminExamsRouteImport } from './routes/admin.exams'
+import { Route as AdminCertificatesRouteImport } from './routes/admin.certificates'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as ExamsIdTakeRouteImport } from './routes/exams.$id.take'
 import { Route as ExamsIdResultRouteImport } from './routes/exams.$id.result'
@@ -75,6 +76,11 @@ const AdminExamsRoute = AdminExamsRouteImport.update({
   path: '/admin/exams',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminCertificatesRoute = AdminCertificatesRouteImport.update({
+  id: '/admin/certificates',
+  path: '/admin/certificates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   id: '/admin/analytics',
   path: '/admin/analytics',
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/certificates': typeof AdminCertificatesRoute
   '/admin/exams': typeof AdminExamsRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/certificates': typeof AdminCertificatesRoute
   '/admin/exams': typeof AdminExamsRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/certificates': typeof AdminCertificatesRoute
   '/admin/exams': typeof AdminExamsRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/admin/analytics'
+    | '/admin/certificates'
     | '/admin/exams'
     | '/admin/login'
     | '/admin/members'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/admin/analytics'
+    | '/admin/certificates'
     | '/admin/exams'
     | '/admin/login'
     | '/admin/members'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/admin/analytics'
+    | '/admin/certificates'
     | '/admin/exams'
     | '/admin/login'
     | '/admin/members'
@@ -213,6 +225,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminCertificatesRoute: typeof AdminCertificatesRoute
   AdminExamsRoute: typeof AdminExamsRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMembersRoute: typeof AdminMembersRoute
@@ -291,6 +304,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/exams'
       fullPath: '/admin/exams'
       preLoaderRoute: typeof AdminExamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/certificates': {
+      id: '/admin/certificates'
+      path: '/admin/certificates'
+      fullPath: '/admin/certificates'
+      preLoaderRoute: typeof AdminCertificatesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/analytics': {
@@ -372,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminCertificatesRoute: AdminCertificatesRoute,
   AdminExamsRoute: AdminExamsRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
   AdminMembersRoute: AdminMembersRoute,
