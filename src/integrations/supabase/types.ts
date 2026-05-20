@@ -144,6 +144,7 @@ export type Database = {
           allow_back: boolean
           created_at: string
           description: string | null
+          groups: Json
           id: string
           is_published: boolean
           level: string
@@ -154,6 +155,7 @@ export type Database = {
           allow_back?: boolean
           created_at?: string
           description?: string | null
+          groups?: Json
           id?: string
           is_published?: boolean
           level?: string
@@ -164,6 +166,7 @@ export type Database = {
           allow_back?: boolean
           created_at?: string
           description?: string | null
+          groups?: Json
           id?: string
           is_published?: boolean
           level?: string
