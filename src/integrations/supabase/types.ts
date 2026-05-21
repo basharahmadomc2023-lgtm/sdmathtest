@@ -62,6 +62,7 @@ export type Database = {
       attempts: {
         Row: {
           approved: boolean | null
+          chosen_level: string | null
           correct_count: number | null
           exam_id: string
           finished_at: string | null
@@ -73,6 +74,7 @@ export type Database = {
         }
         Insert: {
           approved?: boolean | null
+          chosen_level?: string | null
           correct_count?: number | null
           exam_id: string
           finished_at?: string | null
@@ -84,6 +86,7 @@ export type Database = {
         }
         Update: {
           approved?: boolean | null
+          chosen_level?: string | null
           correct_count?: number | null
           exam_id?: string
           finished_at?: string | null
@@ -149,6 +152,7 @@ export type Database = {
           is_published: boolean
           level: string
           title: string
+          total_marks: number | null
           total_time: number
         }
         Insert: {
@@ -160,6 +164,7 @@ export type Database = {
           is_published?: boolean
           level?: string
           title: string
+          total_marks?: number | null
           total_time?: number
         }
         Update: {
@@ -171,6 +176,7 @@ export type Database = {
           is_published?: boolean
           level?: string
           title?: string
+          total_marks?: number | null
           total_time?: number
         }
         Relationships: []
@@ -216,6 +222,7 @@ export type Database = {
           group_no: number
           id: string
           image_url: string | null
+          level: string
           marks: number
           order_no: number
           question_text: string | null
@@ -228,6 +235,7 @@ export type Database = {
           group_no?: number
           id?: string
           image_url?: string | null
+          level?: string
           marks?: number
           order_no?: number
           question_text?: string | null
@@ -240,6 +248,7 @@ export type Database = {
           group_no?: number
           id?: string
           image_url?: string | null
+          level?: string
           marks?: number
           order_no?: number
           question_text?: string | null
