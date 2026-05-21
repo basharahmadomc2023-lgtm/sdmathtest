@@ -110,6 +110,6 @@ function ExamIntro() {
           </div>
         </div>
       </main>
-    </main>
+    </div>
   );
 }
