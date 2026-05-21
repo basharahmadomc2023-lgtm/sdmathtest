@@ -8,9 +8,13 @@ import { memberSession } from "@/lib/session";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock } from "lucide-react";
 import { toast } from "sonner";
+import { z } from "zod";
+
+const searchSchema = z.object({ lvl: z.enum(["beginner", "intermediate", "advanced"]).optional() });
 
 export const Route = createFileRoute("/exams/$id/take")({
   component: TakeExam,
+  validateSearch: searchSchema,
 });
 
 type Q = {
@@ -26,6 +30,7 @@ type Q = {
 
 function TakeExam() {
   const { id } = Route.useParams();
+  const search = Route.useSearch();
   const navigate = useNavigate();
   const [exam, setExam] = useState<any>(null);
   const [questions, setQuestions] = useState<Q[]>([]);
@@ -44,18 +49,20 @@ function TakeExam() {
     if (!session) { navigate({ to: "/login" }); return; }
     (async () => {
       const { data: e } = await supabase.from("exams").select("*").eq("id", id).maybeSingle();
-      const { data: qs } = await supabase.from("questions").select("*").eq("exam_id", id).order("order_no");
-      if (!e || !qs?.length) { toast.error("لا توجد أسئلة لهذا الاختبار"); navigate({ to: "/exams" }); return; }
+      let qquery = supabase.from("questions").select("*").eq("exam_id", id).order("order_no");
+      if (search.lvl) qquery = qquery.eq("level", search.lvl);
+      const { data: qs } = await qquery;
+      if (!e || !qs?.length) { toast.error("لا توجد أسئلة لهذا المستوى في هذا الاختبار"); navigate({ to: "/exams" }); return; }
       setExam(e);
       setQuestions(qs as Q[]);
       setQTimer(qs[0].time_limit);
       setTotalTimer(e.total_time);
-      const { data: a } = await supabase.from("attempts").insert({ exam_id: id, member_id: session.id }).select("id").single();
+      const { data: a } = await supabase.from("attempts").insert({ exam_id: id, member_id: session.id, chosen_level: search.lvl ?? null } as any).select("id").single();
       setAttemptId(a!.id);
       startedAt.current = Date.now();
       qStartAt.current = Date.now();
     })();
-  }, [id, navigate]);
+  }, [id, navigate, search.lvl]);
 
   // total timer
   useEffect(() => {

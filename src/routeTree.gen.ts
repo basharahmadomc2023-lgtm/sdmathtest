@@ -19,6 +19,7 @@ import { Route as CertificateCertNumberRouteImport } from './routes/certificate.
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminExamsRouteImport } from './routes/admin.exams'
+import { Route as AdminCreateExamRouteImport } from './routes/admin.create-exam'
 import { Route as AdminCertificatesRouteImport } from './routes/admin.certificates'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as ExamsIdTakeRouteImport } from './routes/exams.$id.take'
@@ -76,6 +77,11 @@ const AdminExamsRoute = AdminExamsRouteImport.update({
   path: '/admin/exams',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminCreateExamRoute = AdminCreateExamRouteImport.update({
+  id: '/admin/create-exam',
+  path: '/admin/create-exam',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminCertificatesRoute = AdminCertificatesRouteImport.update({
   id: '/admin/certificates',
   path: '/admin/certificates',
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/certificates': typeof AdminCertificatesRoute
+  '/admin/create-exam': typeof AdminCreateExamRoute
   '/admin/exams': typeof AdminExamsRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/certificates': typeof AdminCertificatesRoute
+  '/admin/create-exam': typeof AdminCreateExamRoute
   '/admin/exams': typeof AdminExamsRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/certificates': typeof AdminCertificatesRoute
+  '/admin/create-exam': typeof AdminCreateExamRoute
   '/admin/exams': typeof AdminExamsRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin/analytics'
     | '/admin/certificates'
+    | '/admin/create-exam'
     | '/admin/exams'
     | '/admin/login'
     | '/admin/members'
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin/analytics'
     | '/admin/certificates'
+    | '/admin/create-exam'
     | '/admin/exams'
     | '/admin/login'
     | '/admin/members'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin/analytics'
     | '/admin/certificates'
+    | '/admin/create-exam'
     | '/admin/exams'
     | '/admin/login'
     | '/admin/members'
@@ -226,6 +238,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminCertificatesRoute: typeof AdminCertificatesRoute
+  AdminCreateExamRoute: typeof AdminCreateExamRoute
   AdminExamsRoute: typeof AdminExamsRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMembersRoute: typeof AdminMembersRoute
@@ -304,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/exams'
       fullPath: '/admin/exams'
       preLoaderRoute: typeof AdminExamsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/create-exam': {
+      id: '/admin/create-exam'
+      path: '/admin/create-exam'
+      fullPath: '/admin/create-exam'
+      preLoaderRoute: typeof AdminCreateExamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/certificates': {
@@ -393,6 +413,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminCertificatesRoute: AdminCertificatesRoute,
+  AdminCreateExamRoute: AdminCreateExamRoute,
   AdminExamsRoute: AdminExamsRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
   AdminMembersRoute: AdminMembersRoute,

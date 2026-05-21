@@ -3,8 +3,9 @@ import { Header } from "@/components/Header";
 import { AdminGate } from "@/components/AdminGate";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, FileText, Award, BarChart3, CheckCircle2, TrendingUp } from "lucide-react";
+import { Users, FileText, Award, BarChart3, CheckCircle2, TrendingUp, PlusCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/admin/")({
   component: () => <AdminGate><Dash /></AdminGate>,
@@ -55,6 +56,24 @@ function Dash() {
           <p className="text-sm text-primary font-medium mb-1">لوحة التحكم</p>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight">نظرة عامة</h1>
           <p className="text-muted-foreground mt-1.5">ملخّص نشاط منصة SDMATH في الوقت الحالي.</p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
+          className="mb-6"
+        >
+          <Link to="/admin/create-exam" className="card-premium block p-5 sm:p-6 group">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary-glow text-white flex items-center justify-center shadow-soft group-hover:scale-105 transition-transform">
+                <PlusCircle className="h-6 w-6" />
+              </div>
+              <div className="flex-1">
+                <p className="text-lg sm:text-xl font-bold tracking-tight">إنشاء اختبار</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">صفحة الاختبار – أنشئ اختباراً جديداً مع مجموعات الأسئلة والمستويات</p>
+              </div>
+              <Button variant="outline" className="rounded-full hidden sm:inline-flex">فتح</Button>
+            </div>
+          </Link>
         </motion.div>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
