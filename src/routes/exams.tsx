@@ -93,7 +93,7 @@ function ExamsList() {
                   <span className="flex items-center gap-1"><ListChecks className="h-3.5 w-3.5" /> {e.question_count} سؤال</span>
                   <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {Math.round(e.total_time / 60)} دقيقة</span>
                 </div>
-                <Link to="/exams/$id" params={{ id: e.id }}>
+                <Link to="/exam/$examId" params={{ examId: e.id }}>
                   <Button className="w-full rounded-full shadow-soft"><Play className="ml-1 h-4 w-4" /> بدء الاختبار</Button>
                 </Link>
               </motion.div>
