@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrainerLoginRouteImport } from './routes/trainer-login'
+import { Route as TrainerDashboardRouteImport } from './routes/trainer-dashboard'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExamsRouteImport } from './routes/exams'
@@ -17,6 +19,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ExamsIdRouteImport } from './routes/exams.$id'
 import { Route as ExamExamIdRouteImport } from './routes/exam.$examId'
 import { Route as CertificateCertNumberRouteImport } from './routes/certificate.$certNumber'
+import { Route as AdminTrainersRouteImport } from './routes/admin.trainers'
 import { Route as AdminMembersRouteImport } from './routes/admin.members'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminExamsRouteImport } from './routes/admin.exams'
@@ -25,9 +28,20 @@ import { Route as AdminCertificatesRouteImport } from './routes/admin.certificat
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as ExamsIdTakeRouteImport } from './routes/exams.$id.take'
 import { Route as ExamsIdResultRouteImport } from './routes/exams.$id.result'
+import { Route as AdminTrainersTrainerIdRouteImport } from './routes/admin.trainers.$trainerId'
 import { Route as AdminResultsAttemptIdRouteImport } from './routes/admin.results.$attemptId'
 import { Route as AdminExamsNewRouteImport } from './routes/admin.exams.new'
 
+const TrainerLoginRoute = TrainerLoginRouteImport.update({
+  id: '/trainer-login',
+  path: '/trainer-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrainerDashboardRoute = TrainerDashboardRouteImport.update({
+  id: '/trainer-dashboard',
+  path: '/trainer-dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -66,6 +80,11 @@ const ExamExamIdRoute = ExamExamIdRouteImport.update({
 const CertificateCertNumberRoute = CertificateCertNumberRouteImport.update({
   id: '/certificate/$certNumber',
   path: '/certificate/$certNumber',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTrainersRoute = AdminTrainersRouteImport.update({
+  id: '/admin/trainers',
+  path: '/admin/trainers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminMembersRoute = AdminMembersRouteImport.update({
@@ -108,6 +127,11 @@ const ExamsIdResultRoute = ExamsIdResultRouteImport.update({
   path: '/result',
   getParentRoute: () => ExamsIdRoute,
 } as any)
+const AdminTrainersTrainerIdRoute = AdminTrainersTrainerIdRouteImport.update({
+  id: '/$trainerId',
+  path: '/$trainerId',
+  getParentRoute: () => AdminTrainersRoute,
+} as any)
 const AdminResultsAttemptIdRoute = AdminResultsAttemptIdRouteImport.update({
   id: '/admin/results/$attemptId',
   path: '/admin/results/$attemptId',
@@ -124,18 +148,22 @@ export interface FileRoutesByFullPath {
   '/exams': typeof ExamsRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/trainer-dashboard': typeof TrainerDashboardRoute
+  '/trainer-login': typeof TrainerLoginRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/certificates': typeof AdminCertificatesRoute
   '/admin/create-exam': typeof AdminCreateExamRoute
   '/admin/exams': typeof AdminExamsRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
+  '/admin/trainers': typeof AdminTrainersRouteWithChildren
   '/certificate/$certNumber': typeof CertificateCertNumberRoute
   '/exam/$examId': typeof ExamExamIdRoute
   '/exams/$id': typeof ExamsIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/admin/exams/new': typeof AdminExamsNewRoute
   '/admin/results/$attemptId': typeof AdminResultsAttemptIdRoute
+  '/admin/trainers/$trainerId': typeof AdminTrainersTrainerIdRoute
   '/exams/$id/result': typeof ExamsIdResultRoute
   '/exams/$id/take': typeof ExamsIdTakeRoute
 }
@@ -144,18 +172,22 @@ export interface FileRoutesByTo {
   '/exams': typeof ExamsRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/trainer-dashboard': typeof TrainerDashboardRoute
+  '/trainer-login': typeof TrainerLoginRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/certificates': typeof AdminCertificatesRoute
   '/admin/create-exam': typeof AdminCreateExamRoute
   '/admin/exams': typeof AdminExamsRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
+  '/admin/trainers': typeof AdminTrainersRouteWithChildren
   '/certificate/$certNumber': typeof CertificateCertNumberRoute
   '/exam/$examId': typeof ExamExamIdRoute
   '/exams/$id': typeof ExamsIdRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/admin/exams/new': typeof AdminExamsNewRoute
   '/admin/results/$attemptId': typeof AdminResultsAttemptIdRoute
+  '/admin/trainers/$trainerId': typeof AdminTrainersTrainerIdRoute
   '/exams/$id/result': typeof ExamsIdResultRoute
   '/exams/$id/take': typeof ExamsIdTakeRoute
 }
@@ -165,18 +197,22 @@ export interface FileRoutesById {
   '/exams': typeof ExamsRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/trainer-dashboard': typeof TrainerDashboardRoute
+  '/trainer-login': typeof TrainerLoginRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/certificates': typeof AdminCertificatesRoute
   '/admin/create-exam': typeof AdminCreateExamRoute
   '/admin/exams': typeof AdminExamsRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/members': typeof AdminMembersRoute
+  '/admin/trainers': typeof AdminTrainersRouteWithChildren
   '/certificate/$certNumber': typeof CertificateCertNumberRoute
   '/exam/$examId': typeof ExamExamIdRoute
   '/exams/$id': typeof ExamsIdRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/admin/exams/new': typeof AdminExamsNewRoute
   '/admin/results/$attemptId': typeof AdminResultsAttemptIdRoute
+  '/admin/trainers/$trainerId': typeof AdminTrainersTrainerIdRoute
   '/exams/$id/result': typeof ExamsIdResultRoute
   '/exams/$id/take': typeof ExamsIdTakeRoute
 }
@@ -187,18 +223,22 @@ export interface FileRouteTypes {
     | '/exams'
     | '/login'
     | '/register'
+    | '/trainer-dashboard'
+    | '/trainer-login'
     | '/admin/analytics'
     | '/admin/certificates'
     | '/admin/create-exam'
     | '/admin/exams'
     | '/admin/login'
     | '/admin/members'
+    | '/admin/trainers'
     | '/certificate/$certNumber'
     | '/exam/$examId'
     | '/exams/$id'
     | '/admin/'
     | '/admin/exams/new'
     | '/admin/results/$attemptId'
+    | '/admin/trainers/$trainerId'
     | '/exams/$id/result'
     | '/exams/$id/take'
   fileRoutesByTo: FileRoutesByTo
@@ -207,18 +247,22 @@ export interface FileRouteTypes {
     | '/exams'
     | '/login'
     | '/register'
+    | '/trainer-dashboard'
+    | '/trainer-login'
     | '/admin/analytics'
     | '/admin/certificates'
     | '/admin/create-exam'
     | '/admin/exams'
     | '/admin/login'
     | '/admin/members'
+    | '/admin/trainers'
     | '/certificate/$certNumber'
     | '/exam/$examId'
     | '/exams/$id'
     | '/admin'
     | '/admin/exams/new'
     | '/admin/results/$attemptId'
+    | '/admin/trainers/$trainerId'
     | '/exams/$id/result'
     | '/exams/$id/take'
   id:
@@ -227,18 +271,22 @@ export interface FileRouteTypes {
     | '/exams'
     | '/login'
     | '/register'
+    | '/trainer-dashboard'
+    | '/trainer-login'
     | '/admin/analytics'
     | '/admin/certificates'
     | '/admin/create-exam'
     | '/admin/exams'
     | '/admin/login'
     | '/admin/members'
+    | '/admin/trainers'
     | '/certificate/$certNumber'
     | '/exam/$examId'
     | '/exams/$id'
     | '/admin/'
     | '/admin/exams/new'
     | '/admin/results/$attemptId'
+    | '/admin/trainers/$trainerId'
     | '/exams/$id/result'
     | '/exams/$id/take'
   fileRoutesById: FileRoutesById
@@ -248,12 +296,15 @@ export interface RootRouteChildren {
   ExamsRoute: typeof ExamsRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  TrainerDashboardRoute: typeof TrainerDashboardRoute
+  TrainerLoginRoute: typeof TrainerLoginRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminCertificatesRoute: typeof AdminCertificatesRoute
   AdminCreateExamRoute: typeof AdminCreateExamRoute
   AdminExamsRoute: typeof AdminExamsRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMembersRoute: typeof AdminMembersRoute
+  AdminTrainersRoute: typeof AdminTrainersRouteWithChildren
   CertificateCertNumberRoute: typeof CertificateCertNumberRoute
   ExamExamIdRoute: typeof ExamExamIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -262,6 +313,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trainer-login': {
+      id: '/trainer-login'
+      path: '/trainer-login'
+      fullPath: '/trainer-login'
+      preLoaderRoute: typeof TrainerLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trainer-dashboard': {
+      id: '/trainer-dashboard'
+      path: '/trainer-dashboard'
+      fullPath: '/trainer-dashboard'
+      preLoaderRoute: typeof TrainerDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -316,6 +381,13 @@ declare module '@tanstack/react-router' {
       path: '/certificate/$certNumber'
       fullPath: '/certificate/$certNumber'
       preLoaderRoute: typeof CertificateCertNumberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/trainers': {
+      id: '/admin/trainers'
+      path: '/admin/trainers'
+      fullPath: '/admin/trainers'
+      preLoaderRoute: typeof AdminTrainersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/members': {
@@ -374,6 +446,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExamsIdResultRouteImport
       parentRoute: typeof ExamsIdRoute
     }
+    '/admin/trainers/$trainerId': {
+      id: '/admin/trainers/$trainerId'
+      path: '/$trainerId'
+      fullPath: '/admin/trainers/$trainerId'
+      preLoaderRoute: typeof AdminTrainersTrainerIdRouteImport
+      parentRoute: typeof AdminTrainersRoute
+    }
     '/admin/results/$attemptId': {
       id: '/admin/results/$attemptId'
       path: '/admin/results/$attemptId'
@@ -426,17 +505,32 @@ const AdminExamsRouteWithChildren = AdminExamsRoute._addFileChildren(
   AdminExamsRouteChildren,
 )
 
+interface AdminTrainersRouteChildren {
+  AdminTrainersTrainerIdRoute: typeof AdminTrainersTrainerIdRoute
+}
+
+const AdminTrainersRouteChildren: AdminTrainersRouteChildren = {
+  AdminTrainersTrainerIdRoute: AdminTrainersTrainerIdRoute,
+}
+
+const AdminTrainersRouteWithChildren = AdminTrainersRoute._addFileChildren(
+  AdminTrainersRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExamsRoute: ExamsRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  TrainerDashboardRoute: TrainerDashboardRoute,
+  TrainerLoginRoute: TrainerLoginRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminCertificatesRoute: AdminCertificatesRoute,
   AdminCreateExamRoute: AdminCreateExamRoute,
   AdminExamsRoute: AdminExamsRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
   AdminMembersRoute: AdminMembersRoute,
+  AdminTrainersRoute: AdminTrainersRouteWithChildren,
   CertificateCertNumberRoute: CertificateCertNumberRoute,
   ExamExamIdRoute: ExamExamIdRoute,
   AdminIndexRoute: AdminIndexRoute,
