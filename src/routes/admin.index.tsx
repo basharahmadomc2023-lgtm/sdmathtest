@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { AdminGate } from "@/components/AdminGate";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, FileText, Award, BarChart3, CheckCircle2, TrendingUp, PlusCircle } from "lucide-react";
+import { Users, FileText, Award, BarChart3, CheckCircle2, TrendingUp, PlusCircle, UserCog } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
@@ -46,6 +46,7 @@ function Dash() {
     { label: "الاختبارات المنجزة", value: stats.attempts, icon: BarChart3, link: "/admin/analytics", tone: "from-indigo-500 to-violet-500" },
     { label: "الشهادات", value: stats.certs, icon: Award, link: "/admin/certificates", tone: "from-amber-500 to-orange-500" },
     { label: "متوسط النتائج", value: `${stats.avg}%`, icon: TrendingUp, link: "/admin/analytics", tone: "from-rose-500 to-pink-500" },
+    { label: "المدربين", value: "إدارة", icon: UserCog, link: "/admin/trainers", tone: "from-fuchsia-500 to-purple-500" },
   ];
 
   return (

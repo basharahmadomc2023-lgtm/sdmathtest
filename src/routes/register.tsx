@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { z } from "zod";
+import { isThreePartName, THREE_PART_NAME_MSG } from "@/lib/session";
 import logo from "@/assets/sdmath-logo.png";
 
 export const Route = createFileRoute("/register")({
@@ -16,10 +17,10 @@ export const Route = createFileRoute("/register")({
 });
 
 const schema = z.object({
-  name: z.string().trim().min(2, "الاسم قصير جداً").max(80),
-  whatsapp: z.string().trim().min(7).max(20),
-  coach_name: z.string().trim().min(2).max(80),
-  membership_no: z.string().trim().min(2).max(40),
+  name: z.string().trim().refine(isThreePartName, { message: THREE_PART_NAME_MSG }),
+  whatsapp: z.string().trim().min(7, "يجب أن يحتوي رقم الواتساب على 7 أحرف على الأقل").max(20),
+  coach_name: z.string().trim().refine(isThreePartName, { message: THREE_PART_NAME_MSG }),
+  membership_no: z.string().trim().min(2, "أدخل رقم العضوية").max(40),
 });
 
 function Register() {
@@ -32,7 +33,7 @@ function Register() {
     const parsed = schema.safeParse(form);
     if (!parsed.success) { toast.error(parsed.error.errors[0]?.message || "تحقق من البيانات"); return; }
     setLoading(true);
-    const { error } = await supabase.from("members").insert({ ...parsed.data, status: "pending" });
+    const { error } = await supabase.from("members").insert({ ...parsed.data, status: "pending", trainer_name: parsed.data.coach_name });
     setLoading(false);
     if (error) {
       if (error.code === "23505") toast.error("رقم العضوية مستخدم مسبقاً");

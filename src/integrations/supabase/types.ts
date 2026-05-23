@@ -184,32 +184,44 @@ export type Database = {
       members: {
         Row: {
           coach_name: string
+          completed_worksheets_count: number
           created_at: string
+          final_certificate_status: string
           id: string
           level: string | null
           membership_no: string
           name: string
           status: string
+          trainer_id: string | null
+          trainer_name: string | null
           whatsapp: string
         }
         Insert: {
           coach_name: string
+          completed_worksheets_count?: number
           created_at?: string
+          final_certificate_status?: string
           id?: string
           level?: string | null
           membership_no: string
           name: string
           status?: string
+          trainer_id?: string | null
+          trainer_name?: string | null
           whatsapp: string
         }
         Update: {
           coach_name?: string
+          completed_worksheets_count?: number
           created_at?: string
+          final_certificate_status?: string
           id?: string
           level?: string | null
           membership_no?: string
           name?: string
           status?: string
+          trainer_id?: string | null
+          trainer_name?: string | null
           whatsapp?: string
         }
         Relationships: []
@@ -263,6 +275,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      trainers: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          membership_number: string
+          phone: string | null
+          profile_image_url: string | null
+          residence: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id?: string
+          membership_number: string
+          phone?: string | null
+          profile_image_url?: string | null
+          residence?: string | null
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          membership_number?: string
+          phone?: string | null
+          profile_image_url?: string | null
+          residence?: string | null
+          status?: string
+        }
+        Relationships: []
       }
     }
     Views: {

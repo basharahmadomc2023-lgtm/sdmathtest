@@ -57,6 +57,11 @@ function Home() {
                   تسجيل الدخول
                 </Button>
               </Link>
+              <Link to="/trainer-login">
+                <Button size="lg" variant="secondary" className="rounded-full h-12 px-7 text-base shadow-soft">
+                  دخول المدربين
+                </Button>
+              </Link>
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-primary" /> آمن ومشفّر</span>
