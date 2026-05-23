@@ -41,5 +41,30 @@ export const adminSession = {
   },
 };
 
+export type TrainerSession = {
+  id: string;
+  full_name: string;
+  membership_number: string;
+};
+const TRAINER_KEY = "sdmath_trainer";
+export const trainerSession = {
+  get(): TrainerSession | null {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = localStorage.getItem(TRAINER_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch { return null; }
+  },
+  set(s: TrainerSession) { localStorage.setItem(TRAINER_KEY, JSON.stringify(s)); },
+  clear() { localStorage.removeItem(TRAINER_KEY); },
+};
+
 export const ADMIN_USERNAME = "SDMATH";
 export const ADMIN_PASSWORD = "2386831";
+
+// Validates Arabic full name with exactly 3 parts
+export function isThreePartName(name: string): boolean {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  return parts.length === 3;
+}
+export const THREE_PART_NAME_MSG = "يجب إدخال الاسم من ثلاث مقاطع مثل: سليمان خالد دياب";
