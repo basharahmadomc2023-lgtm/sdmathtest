@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { ArrowRight, Save, IdCard, Upload, UserPlus } from "lucide-react";
+import { ArrowRight, Save, IdCard, Upload, UserPlus, CircleCheck as CheckCircle2, Circle as XCircle, Eye, EyeOff } from "lucide-react";
 import { generateTrainerCardPDF } from "@/lib/trainer-card";
 import { isThreePartName, THREE_PART_NAME_MSG } from "@/lib/session";
 import {
@@ -59,6 +59,10 @@ function EditTrainer() {
       residence: trainer.residence,
       profile_image_url: trainer.profile_image_url,
       status: trainer.status,
+      training_levels: trainer.training_levels,
+      achievements: trainer.achievements,
+      awards: trainer.awards,
+      profile_visibility: trainer.profile_visibility,
     }).eq("id", trainer.id);
     if (error) { toast.error("فشل الحفظ"); return; }
     toast.success("تم حفظ بيانات المدرب");
@@ -134,6 +138,45 @@ function EditTrainer() {
             <Button variant="outline" className="rounded-full" onClick={() => generateTrainerCardPDF({ fullName: trainer.full_name, membershipNumber: trainer.membership_number, profileImageUrl: trainer.profile_image_url })}>
               <IdCard className="ml-1 h-4 w-4" /> إصدار بطاقة العضوية
             </Button>
+          </div>
+        </section>
+
+        {/* Profile content for public page */}
+        <section className="card-premium p-6 sm:p-8">
+          <h2 className="text-xl font-bold mb-5">محتوى الملف التعريفي العام</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label>المستويات التدريبية</Label>
+              <Input value={trainer.training_levels ?? ""} onChange={(e) => setTrainer({ ...trainer, training_levels: e.target.value })} placeholder="مثال: مستوى 1, مستوى 2" className="h-11 rounded-xl" />
+              <p className="text-[11px] text-muted-foreground">افصل بين المستويات بفاصلة</p>
+            </div>
+            <div className="space-y-1.5">
+              <Label>حالة الملف العام</Label>
+              <Select value={trainer.profile_visibility ?? "hidden"} onValueChange={(v) => setTrainer({ ...trainer, profile_visibility: v })}>
+                <SelectTrigger className="h-11 rounded-xl"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hidden">مخفي</SelectItem>
+                  <SelectItem value="pending">بانتظار الاعتماد</SelectItem>
+                  <SelectItem value="approved">معتمد</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label>الإنجازات</Label>
+              <textarea value={trainer.achievements ?? ""} onChange={(e) => setTrainer({ ...trainer, achievements: e.target.value })} placeholder="كل إنجاز في سطر مستقل" rows={3} className="flex w-full rounded-xl border border-border bg-transparent px-4 py-3 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px] resize-y" dir="rtl" />
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label>الجوائز والشهادات</Label>
+              <textarea value={trainer.awards ?? ""} onChange={(e) => setTrainer({ ...trainer, awards: e.target.value })} placeholder="كل جائزة أو شهادة في سطر مستقل" rows={3} className="flex w-full rounded-xl border border-border bg-transparent px-4 py-3 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px] resize-y" dir="rtl" />
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3 mt-6">
+            <Button onClick={save} className="rounded-full shadow-soft"><Save className="ml-1 h-4 w-4" /> حفظ المحتوى</Button>
+            {trainer.profile_visibility === "approved" && (
+              <Link to="/trainer/$membershipNumber" params={{ membershipNumber: trainer.membership_number }} target="_blank">
+                <Button variant="outline" className="rounded-full"><Eye className="ml-1 h-4 w-4" /> عرض الملف العام</Button>
+              </Link>
+            )}
           </div>
         </section>
 

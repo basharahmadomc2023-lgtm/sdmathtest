@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Pencil, Trash2, IdCard, Plus } from "lucide-react";
+import { Pencil, Trash2, IdCard, Plus, CircleCheck as CheckCircle2, Circle as XCircle, Clock, Eye } from "lucide-react";
 import { generateTrainerCardPDF } from "@/lib/trainer-card";
 import { isThreePartName, THREE_PART_NAME_MSG } from "@/lib/session";
 import {
@@ -67,6 +67,27 @@ function AdminTrainers() {
     await generateTrainerCardPDF({ fullName: t.full_name, membershipNumber: t.membership_number, profileImageUrl: t.profile_image_url });
   };
 
+  const approveProfile = async (id: string) => {
+    await supabase.from("trainers").update({ profile_visibility: "approved" }).eq("id", id);
+    toast.success("تم اعتماد الملف التعريفي");
+    load();
+  };
+  const rejectProfile = async (id: string) => {
+    await supabase.from("trainers").update({ profile_visibility: "hidden" }).eq("id", id);
+    toast.success("تم رفض طلب الإظهار");
+    load();
+  };
+
+  const visBadge = (v: string) => {
+    const map: Record<string, { cls: string; label: string }> = {
+      hidden: { cls: "bg-gray-100 text-gray-600 border-gray-200", label: "مخفي" },
+      pending: { cls: "bg-amber-100 text-amber-800 border-amber-200", label: "بانتظار الاعتماد" },
+      approved: { cls: "bg-emerald-100 text-emerald-800 border-emerald-200", label: "معتمد" },
+    };
+    const info = map[v] ?? map.hidden;
+    return <span className={`text-[11px] rounded-full px-2.5 py-1 border ${info.cls}`}>{info.label}</span>;
+  };
+
   const statusBadge = (s: string) => {
     const map: Record<string, string> = {
       Active: "bg-emerald-100 text-emerald-800 border-emerald-200",
@@ -120,6 +141,7 @@ function AdminTrainers() {
                 <th className="p-4 font-semibold">اسم المدرب</th>
                 <th className="p-4 font-semibold">رقم العضوية</th>
                 <th className="p-4 font-semibold">الحالة</th>
+                <th className="p-4 font-semibold">الملف العام</th>
                 <th className="p-4 font-semibold">تعديل صفحة المدرب</th>
                 <th className="p-4 font-semibold">إصدار بطاقة العضوية</th>
                 <th className="p-4 font-semibold">الإجراءات</th>
@@ -141,6 +163,28 @@ function AdminTrainers() {
                     </Select>
                   </td>
                   <td className="p-4">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {visBadge(t.profile_visibility ?? "hidden")}
+                      {t.profile_visibility === "pending" && (
+                        <>
+                          <Button size="sm" variant="outline" className="h-7 px-2.5 rounded-full text-[11px]" onClick={() => approveProfile(t.id)}>
+                            <CheckCircle2 className="ml-1 h-3 w-3 text-emerald-600" /> اعتماد
+                          </Button>
+                          <Button size="sm" variant="outline" className="h-7 px-2.5 rounded-full text-[11px]" onClick={() => rejectProfile(t.id)}>
+                            <XCircle className="ml-1 h-3 w-3 text-rose-600" /> رفض
+                          </Button>
+                        </>
+                      )}
+                      {t.profile_visibility === "approved" && (
+                        <Link to="/trainer/$membershipNumber" params={{ membershipNumber: t.membership_number }} target="_blank">
+                          <Button size="sm" variant="outline" className="h-7 px-2.5 rounded-full text-[11px]">
+                            <Eye className="ml-1 h-3 w-3" /> عرض
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
+                  </td>
+                  <td className="p-4">
                     <Link to="/admin/trainers/$trainerId" params={{ trainerId: t.id }}>
                       <Button size="sm" variant="outline" className="rounded-full"><Pencil className="ml-1 h-3.5 w-3.5" /> تعديل</Button>
                     </Link>
@@ -157,7 +201,7 @@ function AdminTrainers() {
                   </td>
                 </tr>
               ))}
-              {!list.length && (<tr><td colSpan={6} className="p-12 text-center text-muted-foreground">لا يوجد مدربين</td></tr>)}
+              {!list.length && (<tr><td colSpan={7} className="p-12 text-center text-muted-foreground">لا يوجد مدربين</td></tr>)}
             </tbody>
           </table>
         </div>
@@ -170,13 +214,31 @@ function AdminTrainers() {
                   <p className="font-semibold">{t.full_name}</p>
                   <p className="text-xs text-muted-foreground mt-0.5" dir="ltr">{t.membership_number}</p>
                 </div>
-                {statusBadge(t.status)}
+                <div className="flex flex-col items-end gap-1">
+                  {statusBadge(t.status)}
+                  {visBadge(t.profile_visibility ?? "hidden")}
+                </div>
               </div>
+              {t.profile_visibility === "pending" && (
+                <div className="flex gap-2 mb-3">
+                  <Button size="sm" variant="outline" className="rounded-full" onClick={() => approveProfile(t.id)}>
+                    <CheckCircle2 className="ml-1 h-3.5 w-3.5 text-emerald-600" /> اعتماد الملف
+                  </Button>
+                  <Button size="sm" variant="outline" className="rounded-full" onClick={() => rejectProfile(t.id)}>
+                    <XCircle className="ml-1 h-3.5 w-3.5 text-rose-600" /> رفض
+                  </Button>
+                </div>
+              )}
               <div className="flex flex-wrap gap-2">
                 <Link to="/admin/trainers/$trainerId" params={{ trainerId: t.id }}>
                   <Button size="sm" variant="outline" className="rounded-full"><Pencil className="ml-1 h-3.5 w-3.5" /> تعديل</Button>
                 </Link>
                 <Button size="sm" variant="outline" className="rounded-full" onClick={() => downloadCard(t)}><IdCard className="ml-1 h-3.5 w-3.5" /> بطاقة</Button>
+                {t.profile_visibility === "approved" && (
+                  <Link to="/trainer/$membershipNumber" params={{ membershipNumber: t.membership_number }} target="_blank">
+                    <Button size="sm" variant="outline" className="rounded-full"><Eye className="ml-1 h-3.5 w-3.5" /> عرض الملف</Button>
+                  </Link>
+                )}
                 <Button size="sm" variant="outline" className="rounded-full" onClick={() => del(t.id)}><Trash2 className="ml-1 h-3.5 w-3.5 text-destructive" /></Button>
               </div>
             </div>

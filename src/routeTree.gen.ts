@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExamsRouteImport } from './routes/exams'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as TrainerMembershipNumberRouteImport } from './routes/trainer.$membershipNumber'
 import { Route as ExamsIdRouteImport } from './routes/exams.$id'
 import { Route as ExamExamIdRouteImport } from './routes/exam.$examId'
 import { Route as CertificateCertNumberRouteImport } from './routes/certificate.$certNumber'
@@ -65,6 +66,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrainerMembershipNumberRoute = TrainerMembershipNumberRouteImport.update({
+  id: '/trainer/$membershipNumber',
+  path: '/trainer/$membershipNumber',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExamsIdRoute = ExamsIdRouteImport.update({
@@ -160,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/certificate/$certNumber': typeof CertificateCertNumberRoute
   '/exam/$examId': typeof ExamExamIdRoute
   '/exams/$id': typeof ExamsIdRouteWithChildren
+  '/trainer/$membershipNumber': typeof TrainerMembershipNumberRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/exams/new': typeof AdminExamsNewRoute
   '/admin/results/$attemptId': typeof AdminResultsAttemptIdRoute
@@ -184,6 +191,7 @@ export interface FileRoutesByTo {
   '/certificate/$certNumber': typeof CertificateCertNumberRoute
   '/exam/$examId': typeof ExamExamIdRoute
   '/exams/$id': typeof ExamsIdRouteWithChildren
+  '/trainer/$membershipNumber': typeof TrainerMembershipNumberRoute
   '/admin': typeof AdminIndexRoute
   '/admin/exams/new': typeof AdminExamsNewRoute
   '/admin/results/$attemptId': typeof AdminResultsAttemptIdRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/certificate/$certNumber': typeof CertificateCertNumberRoute
   '/exam/$examId': typeof ExamExamIdRoute
   '/exams/$id': typeof ExamsIdRouteWithChildren
+  '/trainer/$membershipNumber': typeof TrainerMembershipNumberRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/exams/new': typeof AdminExamsNewRoute
   '/admin/results/$attemptId': typeof AdminResultsAttemptIdRoute
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
     | '/certificate/$certNumber'
     | '/exam/$examId'
     | '/exams/$id'
+    | '/trainer/$membershipNumber'
     | '/admin/'
     | '/admin/exams/new'
     | '/admin/results/$attemptId'
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
     | '/certificate/$certNumber'
     | '/exam/$examId'
     | '/exams/$id'
+    | '/trainer/$membershipNumber'
     | '/admin'
     | '/admin/exams/new'
     | '/admin/results/$attemptId'
@@ -283,6 +294,7 @@ export interface FileRouteTypes {
     | '/certificate/$certNumber'
     | '/exam/$examId'
     | '/exams/$id'
+    | '/trainer/$membershipNumber'
     | '/admin/'
     | '/admin/exams/new'
     | '/admin/results/$attemptId'
@@ -307,6 +319,7 @@ export interface RootRouteChildren {
   AdminTrainersRoute: typeof AdminTrainersRouteWithChildren
   CertificateCertNumberRoute: typeof CertificateCertNumberRoute
   ExamExamIdRoute: typeof ExamExamIdRoute
+  TrainerMembershipNumberRoute: typeof TrainerMembershipNumberRoute
   AdminIndexRoute: typeof AdminIndexRoute
   AdminResultsAttemptIdRoute: typeof AdminResultsAttemptIdRoute
 }
@@ -360,6 +373,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trainer/$membershipNumber': {
+      id: '/trainer/$membershipNumber'
+      path: '/trainer/$membershipNumber'
+      fullPath: '/trainer/$membershipNumber'
+      preLoaderRoute: typeof TrainerMembershipNumberRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/exams/$id': {
@@ -533,6 +553,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminTrainersRoute: AdminTrainersRouteWithChildren,
   CertificateCertNumberRoute: CertificateCertNumberRoute,
   ExamExamIdRoute: ExamExamIdRoute,
+  TrainerMembershipNumberRoute: TrainerMembershipNumberRoute,
   AdminIndexRoute: AdminIndexRoute,
   AdminResultsAttemptIdRoute: AdminResultsAttemptIdRoute,
 }
