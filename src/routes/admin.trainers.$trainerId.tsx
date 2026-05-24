@@ -36,9 +36,21 @@ function EditTrainer() {
     if (t) {
       const { data: s } = await supabase
         .from("members")
-        .select("id,name,completed_worksheets_count,final_certificate_status,trainer_name,trainer_id")
+        .select("id,name,completed_worksheets_count,final_certificate_status,final_certificate_url,trainer_name,trainer_id")
         .or(`trainer_id.eq.${t.id},trainer_name.eq.${t.full_name}`);
-      setStudents(s ?? []);
+      const memIds = (s ?? []).map((m: any) => m.id);
+      let withStats: any[] = s ?? [];
+      if (memIds.length) {
+        const { data: at } = await supabase
+          .from("attempts")
+          .select("member_id")
+          .not("finished_at", "is", null)
+          .in("member_id", memIds);
+        const counts: Record<string, number> = {};
+        (at ?? []).forEach((a: any) => { counts[a.member_id] = (counts[a.member_id] ?? 0) + 1; });
+        withStats = (s ?? []).map((m: any) => ({ ...m, completed_exams: counts[m.id] ?? 0 }));
+      }
+      setStudents(withStats);
     }
     const { data: u } = await supabase
       .from("members")
