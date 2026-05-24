@@ -251,6 +251,9 @@ function AdminTrainers() {
                 </div>
               )}
               <div className="flex flex-wrap gap-2">
+                <Link to="/admin/trainers/$trainerId/subscribers" params={{ trainerId: t.id }}>
+                  <Button size="sm" variant="outline" className="rounded-full"><Users className="ml-1 h-3.5 w-3.5" /> المشتركين ({counts[t.id] ?? 0})</Button>
+                </Link>
                 <Link to="/admin/trainers/$trainerId" params={{ trainerId: t.id }}>
                   <Button size="sm" variant="outline" className="rounded-full"><Pencil className="ml-1 h-3.5 w-3.5" /> تعديل</Button>
                 </Link>
