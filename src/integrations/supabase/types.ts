@@ -187,6 +187,7 @@ export type Database = {
           completed_worksheets_count: number
           created_at: string
           final_certificate_status: string
+          final_certificate_url: string | null
           id: string
           level: string | null
           membership_no: string
@@ -201,6 +202,7 @@ export type Database = {
           completed_worksheets_count?: number
           created_at?: string
           final_certificate_status?: string
+          final_certificate_url?: string | null
           id?: string
           level?: string | null
           membership_no: string
@@ -215,6 +217,7 @@ export type Database = {
           completed_worksheets_count?: number
           created_at?: string
           final_certificate_status?: string
+          final_certificate_url?: string | null
           id?: string
           level?: string | null
           membership_no?: string
@@ -276,8 +279,30 @@ export type Database = {
           },
         ]
       }
+      subscriber_allowed_exams: {
+        Row: {
+          created_at: string
+          exam_id: string
+          id: string
+          member_id: string
+        }
+        Insert: {
+          created_at?: string
+          exam_id: string
+          id?: string
+          member_id: string
+        }
+        Update: {
+          created_at?: string
+          exam_id?: string
+          id?: string
+          member_id?: string
+        }
+        Relationships: []
+      }
       trainers: {
         Row: {
+          competitions: string | null
           created_at: string
           full_name: string
           id: string
@@ -286,8 +311,11 @@ export type Database = {
           profile_image_url: string | null
           residence: string | null
           status: string
+          students_trained: number | null
+          years_experience: number | null
         }
         Insert: {
+          competitions?: string | null
           created_at?: string
           full_name: string
           id?: string
@@ -296,8 +324,11 @@ export type Database = {
           profile_image_url?: string | null
           residence?: string | null
           status?: string
+          students_trained?: number | null
+          years_experience?: number | null
         }
         Update: {
+          competitions?: string | null
           created_at?: string
           full_name?: string
           id?: string
@@ -306,6 +337,8 @@ export type Database = {
           profile_image_url?: string | null
           residence?: string | null
           status?: string
+          students_trained?: number | null
+          years_experience?: number | null
         }
         Relationships: []
       }
