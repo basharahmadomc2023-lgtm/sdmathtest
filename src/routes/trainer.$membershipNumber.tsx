@@ -236,8 +236,31 @@ function TrainerProfilePage() {
               </motion.div>
             )}
 
-            {/* Empty state when no details */}
-            {levels.length === 0 && achievements.length === 0 && awardsList.length === 0 && (
+            {trainer.competitions && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                className="card-premium p-6 sm:p-7"
+              >
+                <div className="flex items-center gap-2.5 mb-4">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-hero text-primary-foreground flex items-center justify-center shadow-soft">
+                    <Trophy className="h-4.5 w-4.5" />
+                  </div>
+                  <h2 className="text-lg font-bold">المسابقات التي شارك فيها</h2>
+                </div>
+                <ul className="space-y-2.5">
+                  {trainer.competitions.split("\n").filter(Boolean).map((item: string, i: number) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                      <span className="text-foreground/85 leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
+            {levels.length === 0 && achievements.length === 0 && awardsList.length === 0 && !trainer.competitions && (
               <div className="card-premium p-8 text-center">
                 <p className="text-muted-foreground text-sm">لم تُضاف تفاصيل بعد لهذا الملف التعريفي.</p>
               </div>
