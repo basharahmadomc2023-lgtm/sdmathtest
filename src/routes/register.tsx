@@ -33,15 +33,84 @@ function Register() {
     const parsed = schema.safeParse(form);
     if (!parsed.success) { toast.error(parsed.error.errors[0]?.message || "تحقق من البيانات"); return; }
     setLoading(true);
-    const { error } = await supabase.from("members").insert({ ...parsed.data, status: "pending", trainer_name: parsed.data.coach_name });
-    setLoading(false);
-    if (error) {
-      if (error.code === "23505") toast.error("رقم العضوية مستخدم مسبقاً");
-      else toast.error("حدث خطأ، حاول مرة أخرى");
-      return;
+
+    try {
+      // 1. Verify trainer membership number exists
+      const { data: trainer, error: trainerErr } = await supabase
+        .from("trainers")
+        .select("id, full_name, membership_number, status")
+        .eq("membership_number", parsed.data.membership_no)
+        .maybeSingle();
+
+      if (trainerErr) {
+        console.error("[Register] Trainer lookup error:", trainerErr);
+        toast.error("حدث خطأ أثناء التحقق من المدرب، حاول مرة أخرى");
+        setLoading(false);
+        return;
+      }
+
+      if (!trainer) {
+        toast.error("رقم عضوية المدرب غير موجود");
+        setLoading(false);
+        return;
+      }
+
+      // 2. Verify trainer name matches the membership number
+      if (trainer.full_name.trim() !== parsed.data.coach_name.trim()) {
+        toast.error("اسم المدرب لا يطابق رقم العضوية");
+        setLoading(false);
+        return;
+      }
+
+      // 3. Check if subscriber already exists (by membership_no or name+whatsapp combo)
+      const { data: existing, error: existErr } = await supabase
+        .from("members")
+        .select("id")
+        .eq("membership_no", parsed.data.membership_no)
+        .maybeSingle();
+
+      if (existErr) {
+        console.error("[Register] Existence check error:", existErr);
+      }
+
+      if (existing) {
+        toast.error("هذا المشترك مسجل مسبقًا");
+        setLoading(false);
+        return;
+      }
+
+      // 4. Insert the new subscriber, linking to trainer
+      const { error } = await supabase.from("members").insert({
+        name: parsed.data.name,
+        whatsapp: parsed.data.whatsapp,
+        coach_name: parsed.data.coach_name,
+        membership_no: parsed.data.membership_no,
+        status: "pending",
+        trainer_name: parsed.data.coach_name,
+        trainer_id: trainer.id,
+      });
+
+      if (error) {
+        console.error("[Register] Insert error:", error.code, error.message, error.details);
+        if (error.code === "23505") {
+          toast.error("هذا المشترك مسجل مسبقًا");
+        } else if (error.code === "42501" || error.message?.includes("policy")) {
+          toast.error("لا توجد صلاحية لإضافة المشترك، تحقق من إعدادات قاعدة البيانات");
+        } else {
+          toast.error("حدث خطأ أثناء التسجيل، حاول مرة أخرى");
+        }
+        setLoading(false);
+        return;
+      }
+
+      toast.success("تم إرسال طلب الاشتراك بنجاح");
+      setTimeout(() => navigate({ to: "/login" }), 1500);
+    } catch (err) {
+      console.error("[Register] Unexpected error:", err);
+      toast.error("حدث خطأ غير متوقع، حاول مرة أخرى");
+    } finally {
+      setLoading(false);
     }
-    toast.success("تم إرسال طلب الاشتراك بنجاح بانتظار موافقة الإدارة");
-    setTimeout(() => navigate({ to: "/login" }), 1500);
   };
 
   return (

@@ -25,19 +25,58 @@ function Login() {
     e.preventDefault();
     if (!name.trim() || !memNo.trim()) { toast.error("أدخل الاسم ورقم العضوية"); return; }
     setLoading(true);
-    const { data, error } = await supabase
-      .from("members")
-      .select("id, name, membership_no, status")
-      .eq("membership_no", memNo.trim())
-      .ilike("name", name.trim())
-      .maybeSingle();
-    setLoading(false);
-    if (error || !data) { toast.error("بيانات الدخول غير صحيحة"); return; }
-    if (data.status === "pending") { toast.warning("طلبك قيد المراجعة"); return; }
-    if (data.status === "rejected") { toast.error("تم رفض طلب اشتراكك. تواصل مع الإدارة."); return; }
-    memberSession.set({ id: data.id, name: data.name, membership_no: data.membership_no });
-    toast.success(`مرحباً ${data.name}`);
-    navigate({ to: "/exams" });
+
+    try {
+      // 1. Look up the member by membership number first
+      const { data: byMemNo, error: memErr } = await supabase
+        .from("members")
+        .select("id, name, membership_no, status")
+        .eq("membership_no", memNo.trim())
+        .maybeSingle();
+
+      if (memErr) {
+        console.error("[Login] Query error:", memErr);
+        toast.error("حدث خطأ أثناء تسجيل الدخول، حاول مرة أخرى");
+        setLoading(false);
+        return;
+      }
+
+      // 2. Account does not exist
+      if (!byMemNo) {
+        toast.error("الحساب غير موجود");
+        setLoading(false);
+        return;
+      }
+
+      // 3. Name mismatch — wrong credentials
+      if (byMemNo.name.trim() !== name.trim()) {
+        toast.error("بيانات الدخول غير صحيحة");
+        setLoading(false);
+        return;
+      }
+
+      // 4. Check account status
+      if (byMemNo.status === "pending") {
+        toast.warning("الحساب بانتظار موافقة الإدارة");
+        setLoading(false);
+        return;
+      }
+      if (byMemNo.status === "rejected") {
+        toast.error("تم رفض طلب اشتراكك. تواصل مع الإدارة.");
+        setLoading(false);
+        return;
+      }
+
+      // 5. Success
+      memberSession.set({ id: byMemNo.id, name: byMemNo.name, membership_no: byMemNo.membership_no });
+      toast.success(`مرحباً ${byMemNo.name}`);
+      navigate({ to: "/exams" });
+    } catch (err) {
+      console.error("[Login] Unexpected error:", err);
+      toast.error("حدث خطأ غير متوقع، حاول مرة أخرى");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
