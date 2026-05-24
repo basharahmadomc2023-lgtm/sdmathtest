@@ -75,7 +75,10 @@ function EditTrainer() {
       achievements: trainer.achievements,
       awards: trainer.awards,
       profile_visibility: trainer.profile_visibility,
-    }).eq("id", trainer.id);
+      years_experience: trainer.years_experience ? Number(trainer.years_experience) : null,
+      students_trained: trainer.students_trained ? Number(trainer.students_trained) : null,
+      competitions: trainer.competitions,
+    } as any).eq("id", trainer.id);
     if (error) { toast.error("فشل الحفظ"); return; }
     toast.success("تم حفظ بيانات المدرب");
     load();
