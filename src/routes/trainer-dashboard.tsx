@@ -86,12 +86,6 @@ function Dashboard() {
     toast.success("تم حفظ المعلومات");
     load();
   };
-    setSaving(false);
-    if (error) { toast.error("حدث خطأ أثناء الحفظ"); return; }
-    trainerSession.set({ id: trainer.id, full_name: trainer.full_name.trim(), membership_number: trainer.membership_number });
-    toast.success("تم حفظ المعلومات");
-    load();
-  };
 
   const requestVisibility = async () => {
     if (!isThreePartName(trainer.full_name || "")) { toast.error("يجب إدخال الاسم الثلاثي أولاً"); return; }
