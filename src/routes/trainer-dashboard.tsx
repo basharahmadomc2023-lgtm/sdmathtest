@@ -31,9 +31,31 @@ function Dashboard() {
     if (t) {
       const { data: s } = await supabase
         .from("members")
-        .select("id,name,completed_worksheets_count,final_certificate_status")
+        .select("id,name,final_certificate_status,final_certificate_url")
         .or(`trainer_id.eq.${t.id},trainer_name.eq.${t.full_name}`);
-      setStudents(s ?? []);
+      const memIds = (s ?? []).map((m: any) => m.id);
+      let withStats: any[] = s ?? [];
+      if (memIds.length) {
+        const { data: at } = await supabase
+          .from("attempts")
+          .select("member_id,correct_count,wrong_count,finished_at")
+          .not("finished_at", "is", null)
+          .in("member_id", memIds);
+        const stats: Record<string, { count: number; scores: number[] }> = {};
+        (at ?? []).forEach((a: any) => {
+          const total = (a.correct_count ?? 0) + (a.wrong_count ?? 0);
+          const score = total > 0 ? Math.round(((a.correct_count ?? 0) / total) * 100) : 0;
+          (stats[a.member_id] ??= { count: 0, scores: [] });
+          stats[a.member_id].count++;
+          stats[a.member_id].scores.push(score);
+        });
+        withStats = (s ?? []).map((m: any) => ({
+          ...m,
+          completed_exams: stats[m.id]?.count ?? 0,
+          exam_scores: stats[m.id]?.scores ?? [],
+        }));
+      }
+      setStudents(withStats);
     }
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
