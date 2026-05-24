@@ -222,7 +222,7 @@ function AdminTrainers() {
                   </td>
                 </tr>
               ))}
-              {!list.length && (<tr><td colSpan={7} className="p-12 text-center text-muted-foreground">لا يوجد مدربين</td></tr>)}
+              {!list.length && (<tr><td colSpan={8} className="p-12 text-center text-muted-foreground">لا يوجد مدربين</td></tr>)}
             </tbody>
           </table>
         </div>
