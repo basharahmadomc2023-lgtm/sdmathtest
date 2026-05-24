@@ -184,6 +184,18 @@ function EditTrainer() {
               <Label>الجوائز والشهادات</Label>
               <textarea value={trainer.awards ?? ""} onChange={(e) => setTrainer({ ...trainer, awards: e.target.value })} placeholder="كل جائزة أو شهادة في سطر مستقل" rows={3} className="flex w-full rounded-xl border border-border bg-transparent px-4 py-3 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px] resize-y" dir="rtl" />
             </div>
+            <div className="space-y-1.5">
+              <Label>سنوات الخبرة التدريبية</Label>
+              <Input type="number" dir="ltr" value={trainer.years_experience ?? ""} onChange={(e) => setTrainer({ ...trainer, years_experience: e.target.value })} className="h-11 rounded-xl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>عدد الطلاب المدربين</Label>
+              <Input type="number" dir="ltr" value={trainer.students_trained ?? ""} onChange={(e) => setTrainer({ ...trainer, students_trained: e.target.value })} className="h-11 rounded-xl" />
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label>المسابقات التي شارك فيها</Label>
+              <textarea value={trainer.competitions ?? ""} onChange={(e) => setTrainer({ ...trainer, competitions: e.target.value })} placeholder="كل مسابقة في سطر مستقل" rows={3} className="flex w-full rounded-xl border border-border bg-transparent px-4 py-3 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px] resize-y" dir="rtl" />
+            </div>
           </div>
           <div className="flex flex-wrap gap-3 mt-6">
             <Button onClick={save} className="rounded-full shadow-soft"><Save className="ml-1 h-4 w-4" /> حفظ المحتوى</Button>
