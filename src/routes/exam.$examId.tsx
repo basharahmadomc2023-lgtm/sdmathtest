@@ -52,6 +52,17 @@ function ExamPage() {
       return;
     }
     (async () => {
+      const { data: allowed } = await supabase
+        .from("subscriber_allowed_exams")
+        .select("id")
+        .eq("member_id", session.id)
+        .eq("exam_id", examId)
+        .maybeSingle();
+      if (!allowed) {
+        toast.error("هذا الاختبار غير مسموح لك");
+        navigate({ to: "/exams" });
+        return;
+      }
       const { data: e } = await supabase.from("exams").select("*").eq("id", examId).maybeSingle();
       const { data: qs } = await supabase
         .from("questions")

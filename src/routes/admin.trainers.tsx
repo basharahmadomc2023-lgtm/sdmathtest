@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Pencil, Trash2, IdCard, Plus, CircleCheck as CheckCircle2, Circle as XCircle, Clock, Eye } from "lucide-react";
+import { Pencil, Trash2, IdCard, Plus, CircleCheck as CheckCircle2, Circle as XCircle, Clock, Eye, Users } from "lucide-react";
 import { generateTrainerCardPDF } from "@/lib/trainer-card";
 import { isThreePartName, THREE_PART_NAME_MSG } from "@/lib/session";
 import {
@@ -26,12 +26,25 @@ const STATUS_LABEL: Record<string, string> = { Active: "مفعل", Pending: "م�
 
 function AdminTrainers() {
   const [list, setList] = useState<any[]>([]);
+  const [counts, setCounts] = useState<Record<string, number>>({});
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ full_name: "", membership_number: "", phone: "", residence: "", status: "Active" });
 
   const load = async () => {
     const { data } = await supabase.from("trainers").select("*").order("created_at", { ascending: false });
     setList(data ?? []);
+    const { data: mem } = await supabase.from("members").select("trainer_id,trainer_name");
+    const byId: Record<string, number> = {};
+    const byName: Record<string, number> = {};
+    (mem ?? []).forEach((m: any) => {
+      if (m.trainer_id) byId[m.trainer_id] = (byId[m.trainer_id] ?? 0) + 1;
+      else if (m.trainer_name) byName[m.trainer_name] = (byName[m.trainer_name] ?? 0) + 1;
+    });
+    const c: Record<string, number> = {};
+    (data ?? []).forEach((t: any) => {
+      c[t.id] = (byId[t.id] ?? 0) + (byName[t.full_name] ?? 0);
+    });
+    setCounts(c);
   };
   useEffect(() => { load(); }, []);
 
@@ -140,6 +153,7 @@ function AdminTrainers() {
               <tr className="text-right">
                 <th className="p-4 font-semibold">اسم المدرب</th>
                 <th className="p-4 font-semibold">رقم العضوية</th>
+                <th className="p-4 font-semibold">عدد المشتركين</th>
                 <th className="p-4 font-semibold">الحالة</th>
                 <th className="p-4 font-semibold">الملف العام</th>
                 <th className="p-4 font-semibold">تعديل صفحة المدرب</th>
@@ -152,6 +166,13 @@ function AdminTrainers() {
                 <tr key={t.id} className="border-t border-border/60 hover:bg-muted/30">
                   <td className="p-4 font-medium">{t.full_name}</td>
                   <td className="p-4 text-muted-foreground" dir="ltr">{t.membership_number}</td>
+                  <td className="p-4">
+                    <Link to="/admin/trainers/$trainerId/subscribers" params={{ trainerId: t.id }}>
+                      <button className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 px-3 py-1 text-sm font-semibold hover:bg-primary/15 transition-colors">
+                        <Users className="h-3.5 w-3.5" /> {counts[t.id] ?? 0}
+                      </button>
+                    </Link>
+                  </td>
                   <td className="p-4">
                     <Select value={t.status} onValueChange={(v) => updateStatus(t.id, v)}>
                       <SelectTrigger className="h-9 w-32"><SelectValue>{statusBadge(t.status)}</SelectValue></SelectTrigger>
@@ -201,7 +222,7 @@ function AdminTrainers() {
                   </td>
                 </tr>
               ))}
-              {!list.length && (<tr><td colSpan={7} className="p-12 text-center text-muted-foreground">لا يوجد مدربين</td></tr>)}
+              {!list.length && (<tr><td colSpan={8} className="p-12 text-center text-muted-foreground">لا يوجد مدربين</td></tr>)}
             </tbody>
           </table>
         </div>
@@ -230,6 +251,9 @@ function AdminTrainers() {
                 </div>
               )}
               <div className="flex flex-wrap gap-2">
+                <Link to="/admin/trainers/$trainerId/subscribers" params={{ trainerId: t.id }}>
+                  <Button size="sm" variant="outline" className="rounded-full"><Users className="ml-1 h-3.5 w-3.5" /> المشتركين ({counts[t.id] ?? 0})</Button>
+                </Link>
                 <Link to="/admin/trainers/$trainerId" params={{ trainerId: t.id }}>
                   <Button size="sm" variant="outline" className="rounded-full"><Pencil className="ml-1 h-3.5 w-3.5" /> تعديل</Button>
                 </Link>

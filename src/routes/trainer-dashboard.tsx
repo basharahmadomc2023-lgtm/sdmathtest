@@ -31,9 +31,31 @@ function Dashboard() {
     if (t) {
       const { data: s } = await supabase
         .from("members")
-        .select("id,name,completed_worksheets_count,final_certificate_status")
+        .select("id,name,final_certificate_status,final_certificate_url")
         .or(`trainer_id.eq.${t.id},trainer_name.eq.${t.full_name}`);
-      setStudents(s ?? []);
+      const memIds = (s ?? []).map((m: any) => m.id);
+      let withStats: any[] = s ?? [];
+      if (memIds.length) {
+        const { data: at } = await supabase
+          .from("attempts")
+          .select("member_id,correct_count,wrong_count,finished_at")
+          .not("finished_at", "is", null)
+          .in("member_id", memIds);
+        const stats: Record<string, { count: number; scores: number[] }> = {};
+        (at ?? []).forEach((a: any) => {
+          const total = (a.correct_count ?? 0) + (a.wrong_count ?? 0);
+          const score = total > 0 ? Math.round(((a.correct_count ?? 0) / total) * 100) : 0;
+          (stats[a.member_id] ??= { count: 0, scores: [] });
+          stats[a.member_id].count++;
+          stats[a.member_id].scores.push(score);
+        });
+        withStats = (s ?? []).map((m: any) => ({
+          ...m,
+          completed_exams: stats[m.id]?.count ?? 0,
+          exam_scores: stats[m.id]?.scores ?? [],
+        }));
+      }
+      setStudents(withStats);
     }
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
@@ -54,7 +76,10 @@ function Dashboard() {
       training_levels: trainer.training_levels,
       achievements: trainer.achievements,
       awards: trainer.awards,
-    }).eq("id", trainer.id);
+      years_experience: trainer.years_experience ? Number(trainer.years_experience) : null,
+      students_trained: trainer.students_trained ? Number(trainer.students_trained) : null,
+      competitions: trainer.competitions,
+    } as any).eq("id", trainer.id);
     setSaving(false);
     if (error) { toast.error("حدث خطأ أثناء الحفظ"); return; }
     trainerSession.set({ id: trainer.id, full_name: trainer.full_name.trim(), membership_number: trainer.membership_number });
@@ -211,6 +236,25 @@ function Dashboard() {
                 dir="rtl"
               />
             </div>
+            <div className="space-y-1.5">
+              <Label>سنوات الخبرة التدريبية</Label>
+              <Input type="number" dir="ltr" value={trainer.years_experience ?? ""} onChange={(e) => setTrainer({ ...trainer, years_experience: e.target.value })} className="h-11 rounded-xl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>عدد الطلاب الذين تم تدريبهم</Label>
+              <Input type="number" dir="ltr" value={trainer.students_trained ?? ""} onChange={(e) => setTrainer({ ...trainer, students_trained: e.target.value })} className="h-11 rounded-xl" />
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label>المسابقات التي شارك فيها</Label>
+              <textarea
+                value={trainer.competitions ?? ""}
+                onChange={(e) => setTrainer({ ...trainer, competitions: e.target.value })}
+                placeholder="كل مسابقة في سطر مستقل"
+                rows={3}
+                className="flex w-full rounded-xl border border-border bg-transparent px-4 py-3 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px] resize-y"
+                dir="rtl"
+              />
+            </div>
           </div>
           <div className="flex flex-wrap gap-3 mt-6">
             <Button onClick={save} disabled={saving} className="rounded-full shadow-soft">
@@ -244,6 +288,13 @@ function Dashboard() {
                   <CheckCircle2 className="h-4 w-4" /> الملف معتمد ومرئي عاماً
                 </span>
               )}
+              {trainer.profile_visibility === "approved" && (
+                <a href={`/trainer/${trainer.membership_number}`} target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" className="rounded-full">
+                    <Eye className="ml-1.5 h-4 w-4" /> عرض الصفحة العامة للمدرب
+                  </Button>
+                </a>
+              )}
               {(trainer.profile_visibility === "pending" || trainer.profile_visibility === "approved") && (
                 <Button variant="outline" onClick={hideProfile} className="rounded-full">
                   <EyeOff className="ml-1.5 h-4 w-4" /> إخفاء الملف
@@ -264,19 +315,36 @@ function Dashboard() {
               <thead className="bg-muted/60">
                 <tr className="text-right">
                   <th className="p-4 font-semibold">اسم الطالب</th>
-                  <th className="p-4 font-semibold">عدد أوراق العمل المنجزة</th>
-                  <th className="p-4 font-semibold">إصدار الشهادة النهائية</th>
+                  <th className="p-4 font-semibold">الاختبارات المنجزة</th>
+                  <th className="p-4 font-semibold">العلامات</th>
+                  <th className="p-4 font-semibold">الشهادة النهائية</th>
                 </tr>
               </thead>
               <tbody>
                 {students.map((s) => (
-                  <tr key={s.id} className="border-t border-border/60">
+                  <tr key={s.id} className="border-t border-border/60 align-top">
                     <td className="p-4 font-medium">{s.name}</td>
-                    <td className="p-4 text-muted-foreground">{s.completed_worksheets_count ?? 0}</td>
-                    <td className="p-4">{certBadge(s.final_certificate_status ?? "pending")}</td>
+                    <td className="p-4 text-muted-foreground">{s.completed_exams ?? 0}</td>
+                    <td className="p-4">
+                      {s.exam_scores?.length ? (
+                        <div className="flex flex-wrap gap-1.5">
+                          {s.exam_scores.map((sc: number, i: number) => (
+                            <span key={i} className="text-[11px] rounded-full bg-primary/10 text-primary border border-primary/20 px-2.5 py-1">{sc}%</span>
+                          ))}
+                        </div>
+                      ) : <span className="text-xs text-muted-foreground">—</span>}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {certBadge(s.final_certificate_status ?? "pending")}
+                        {s.final_certificate_url && (
+                          <a href={s.final_certificate_url} target="_blank" rel="noopener noreferrer" className="text-[11px] rounded-full bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 hover:bg-primary/15">عرض الشهادة</a>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
-                {!students.length && (<tr><td colSpan={3} className="p-12 text-center text-muted-foreground">لا يوجد طلاب مرتبطين بعد</td></tr>)}
+                {!students.length && (<tr><td colSpan={4} className="p-12 text-center text-muted-foreground">لا يوجد طلاب مرتبطين بعد</td></tr>)}
               </tbody>
             </table>
           </div>
@@ -284,9 +352,21 @@ function Dashboard() {
             {students.map((s) => (
               <div key={s.id} className="border border-border/60 rounded-2xl p-4">
                 <p className="font-semibold mb-2">{s.name}</p>
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>أوراق منجزة: {s.completed_worksheets_count ?? 0}</span>
+                <div className="text-xs text-muted-foreground mb-2">
+                  الاختبارات المنجزة: {s.completed_exams ?? 0}
+                </div>
+                {s.exam_scores?.length ? (
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {s.exam_scores.map((sc: number, i: number) => (
+                      <span key={i} className="text-[11px] rounded-full bg-primary/10 text-primary border border-primary/20 px-2.5 py-1">{sc}%</span>
+                    ))}
+                  </div>
+                ) : null}
+                <div className="flex items-center justify-between flex-wrap gap-2">
                   {certBadge(s.final_certificate_status ?? "pending")}
+                  {s.final_certificate_url && (
+                    <a href={s.final_certificate_url} target="_blank" rel="noopener noreferrer" className="text-[11px] text-primary underline">عرض الشهادة</a>
+                  )}
                 </div>
               </div>
             ))}

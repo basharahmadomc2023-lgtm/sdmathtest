@@ -21,7 +21,7 @@ function TrainerProfilePage() {
     (async () => {
       const { data } = await supabase
         .from("trainers")
-        .select("full_name,membership_number,residence,profile_image_url,training_levels,achievements,awards,profile_visibility")
+        .select("full_name,membership_number,residence,profile_image_url,training_levels,achievements,awards,profile_visibility,years_experience,students_trained,competitions")
         .eq("membership_number", membershipNumber)
         .eq("profile_visibility", "approved")
         .maybeSingle();
@@ -136,6 +136,22 @@ function TrainerProfilePage() {
                       </span>
                     )}
                   </div>
+                  {(trainer.years_experience || trainer.students_trained) && (
+                    <div className="mt-4 grid grid-cols-2 gap-3 max-w-md">
+                      {trainer.years_experience != null && (
+                        <div className="rounded-xl bg-primary/5 border border-primary/15 px-3 py-2.5 text-center">
+                          <p className="text-xl font-bold text-primary">{trainer.years_experience}</p>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">سنوات الخبرة</p>
+                        </div>
+                      )}
+                      {trainer.students_trained != null && (
+                        <div className="rounded-xl bg-primary/5 border border-primary/15 px-3 py-2.5 text-center">
+                          <p className="text-xl font-bold text-primary">{trainer.students_trained}</p>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">طالباً تم تدريبه</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -220,8 +236,31 @@ function TrainerProfilePage() {
               </motion.div>
             )}
 
-            {/* Empty state when no details */}
-            {levels.length === 0 && achievements.length === 0 && awardsList.length === 0 && (
+            {trainer.competitions && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                className="card-premium p-6 sm:p-7"
+              >
+                <div className="flex items-center gap-2.5 mb-4">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-hero text-primary-foreground flex items-center justify-center shadow-soft">
+                    <Trophy className="h-4.5 w-4.5" />
+                  </div>
+                  <h2 className="text-lg font-bold">المسابقات التي شارك فيها</h2>
+                </div>
+                <ul className="space-y-2.5">
+                  {trainer.competitions.split("\n").filter(Boolean).map((item: string, i: number) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                      <span className="text-foreground/85 leading-relaxed">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
+            {levels.length === 0 && achievements.length === 0 && awardsList.length === 0 && !trainer.competitions && (
               <div className="card-premium p-8 text-center">
                 <p className="text-muted-foreground text-sm">لم تُضاف تفاصيل بعد لهذا الملف التعريفي.</p>
               </div>

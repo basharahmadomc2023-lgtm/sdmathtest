@@ -187,6 +187,7 @@ export type Database = {
           completed_worksheets_count: number
           created_at: string
           final_certificate_status: string
+          final_certificate_url: string | null
           id: string
           level: string | null
           membership_no: string
@@ -201,6 +202,7 @@ export type Database = {
           completed_worksheets_count?: number
           created_at?: string
           final_certificate_status?: string
+          final_certificate_url?: string | null
           id?: string
           level?: string | null
           membership_no: string
@@ -215,6 +217,7 @@ export type Database = {
           completed_worksheets_count?: number
           created_at?: string
           final_certificate_status?: string
+          final_certificate_url?: string | null
           id?: string
           level?: string | null
           membership_no?: string
@@ -276,36 +279,78 @@ export type Database = {
           },
         ]
       }
+      subscriber_allowed_exams: {
+        Row: {
+          created_at: string
+          exam_id: string
+          id: string
+          member_id: string
+        }
+        Insert: {
+          created_at?: string
+          exam_id: string
+          id?: string
+          member_id: string
+        }
+        Update: {
+          created_at?: string
+          exam_id?: string
+          id?: string
+          member_id?: string
+        }
+        Relationships: []
+      }
       trainers: {
         Row: {
+          achievements: string | null
+          awards: string | null
+          competitions: string | null
           created_at: string
           full_name: string
           id: string
           membership_number: string
           phone: string | null
           profile_image_url: string | null
+          profile_visibility: string
           residence: string | null
           status: string
+          students_trained: number | null
+          training_levels: string | null
+          years_experience: number | null
         }
         Insert: {
+          achievements?: string | null
+          awards?: string | null
+          competitions?: string | null
           created_at?: string
           full_name: string
           id?: string
           membership_number: string
           phone?: string | null
           profile_image_url?: string | null
+          profile_visibility?: string
           residence?: string | null
           status?: string
+          students_trained?: number | null
+          training_levels?: string | null
+          years_experience?: number | null
         }
         Update: {
+          achievements?: string | null
+          awards?: string | null
+          competitions?: string | null
           created_at?: string
           full_name?: string
           id?: string
           membership_number?: string
           phone?: string | null
           profile_image_url?: string | null
+          profile_visibility?: string
           residence?: string | null
           status?: string
+          students_trained?: number | null
+          training_levels?: string | null
+          years_experience?: number | null
         }
         Relationships: []
       }
