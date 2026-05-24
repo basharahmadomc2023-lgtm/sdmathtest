@@ -153,6 +153,7 @@ function AdminTrainers() {
               <tr className="text-right">
                 <th className="p-4 font-semibold">اسم المدرب</th>
                 <th className="p-4 font-semibold">رقم العضوية</th>
+                <th className="p-4 font-semibold">عدد المشتركين</th>
                 <th className="p-4 font-semibold">الحالة</th>
                 <th className="p-4 font-semibold">الملف العام</th>
                 <th className="p-4 font-semibold">تعديل صفحة المدرب</th>
@@ -165,6 +166,13 @@ function AdminTrainers() {
                 <tr key={t.id} className="border-t border-border/60 hover:bg-muted/30">
                   <td className="p-4 font-medium">{t.full_name}</td>
                   <td className="p-4 text-muted-foreground" dir="ltr">{t.membership_number}</td>
+                  <td className="p-4">
+                    <Link to="/admin/trainers/$trainerId/subscribers" params={{ trainerId: t.id }}>
+                      <button className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 px-3 py-1 text-sm font-semibold hover:bg-primary/15 transition-colors">
+                        <Users className="h-3.5 w-3.5" /> {counts[t.id] ?? 0}
+                      </button>
+                    </Link>
+                  </td>
                   <td className="p-4">
                     <Select value={t.status} onValueChange={(v) => updateStatus(t.id, v)}>
                       <SelectTrigger className="h-9 w-32"><SelectValue>{statusBadge(t.status)}</SelectValue></SelectTrigger>
