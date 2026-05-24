@@ -26,12 +26,25 @@ const STATUS_LABEL: Record<string, string> = { Active: "مفعل", Pending: "م�
 
 function AdminTrainers() {
   const [list, setList] = useState<any[]>([]);
+  const [counts, setCounts] = useState<Record<string, number>>({});
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ full_name: "", membership_number: "", phone: "", residence: "", status: "Active" });
 
   const load = async () => {
     const { data } = await supabase.from("trainers").select("*").order("created_at", { ascending: false });
     setList(data ?? []);
+    const { data: mem } = await supabase.from("members").select("trainer_id,trainer_name");
+    const byId: Record<string, number> = {};
+    const byName: Record<string, number> = {};
+    (mem ?? []).forEach((m: any) => {
+      if (m.trainer_id) byId[m.trainer_id] = (byId[m.trainer_id] ?? 0) + 1;
+      else if (m.trainer_name) byName[m.trainer_name] = (byName[m.trainer_name] ?? 0) + 1;
+    });
+    const c: Record<string, number> = {};
+    (data ?? []).forEach((t: any) => {
+      c[t.id] = (byId[t.id] ?? 0) + (byName[t.full_name] ?? 0);
+    });
+    setCounts(c);
   };
   useEffect(() => { load(); }, []);
 
