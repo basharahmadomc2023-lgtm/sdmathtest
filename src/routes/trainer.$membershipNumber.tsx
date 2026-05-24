@@ -136,6 +136,22 @@ function TrainerProfilePage() {
                       </span>
                     )}
                   </div>
+                  {(trainer.years_experience || trainer.students_trained) && (
+                    <div className="mt-4 grid grid-cols-2 gap-3 max-w-md">
+                      {trainer.years_experience != null && (
+                        <div className="rounded-xl bg-primary/5 border border-primary/15 px-3 py-2.5 text-center">
+                          <p className="text-xl font-bold text-primary">{trainer.years_experience}</p>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">سنوات الخبرة</p>
+                        </div>
+                      )}
+                      {trainer.students_trained != null && (
+                        <div className="rounded-xl bg-primary/5 border border-primary/15 px-3 py-2.5 text-center">
+                          <p className="text-xl font-bold text-primary">{trainer.students_trained}</p>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">طالباً تم تدريبه</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
