@@ -288,6 +288,13 @@ function Dashboard() {
                   <CheckCircle2 className="h-4 w-4" /> الملف معتمد ومرئي عاماً
                 </span>
               )}
+              {trainer.profile_visibility === "approved" && (
+                <a href={`/trainer/${trainer.membership_number}`} target="_blank" rel="noopener noreferrer">
+                  <Button variant="outline" className="rounded-full">
+                    <Eye className="ml-1.5 h-4 w-4" /> عرض الصفحة العامة للمدرب
+                  </Button>
+                </a>
+              )}
               {(trainer.profile_visibility === "pending" || trainer.profile_visibility === "approved") && (
                 <Button variant="outline" onClick={hideProfile} className="rounded-full">
                   <EyeOff className="ml-1.5 h-4 w-4" /> إخفاء الملف
