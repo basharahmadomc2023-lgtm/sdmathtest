@@ -239,21 +239,16 @@ function EditTrainer() {
               <thead className="bg-muted/60">
                 <tr className="text-right">
                   <th className="p-4 font-semibold">اسم الطالب</th>
-                  <th className="p-4 font-semibold">عدد أوراق العمل المنجزة</th>
-                  <th className="p-4 font-semibold">إصدار الشهادة النهائية</th>
+                  <th className="p-4 font-semibold">الاختبارات المنجزة</th>
+                  <th className="p-4 font-semibold">حالة الشهادة النهائية</th>
+                  <th className="p-4 font-semibold">ملف الشهادة</th>
                 </tr>
               </thead>
               <tbody>
                 {students.map((s) => (
                   <tr key={s.id} className="border-t border-border/60">
                     <td className="p-4 font-medium">{s.name}</td>
-                    <td className="p-4">
-                      <Input
-                        type="number" defaultValue={s.completed_worksheets_count ?? 0}
-                        onBlur={(e) => updateStudent(s.id, { completed_worksheets_count: parseInt(e.target.value || "0", 10) })}
-                        className="h-9 w-24 rounded-lg" dir="ltr"
-                      />
-                    </td>
+                    <td className="p-4 text-muted-foreground">{s.completed_exams ?? 0}</td>
                     <td className="p-4">
                       <Select defaultValue={s.final_certificate_status ?? "pending"} onValueChange={(v) => updateStudent(s.id, { final_certificate_status: v })}>
                         <SelectTrigger className="h-9 w-40"><SelectValue /></SelectTrigger>
@@ -264,9 +259,28 @@ function EditTrainer() {
                         </SelectContent>
                       </Select>
                     </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <label className="inline-flex items-center gap-1.5 px-3 h-9 rounded-full border border-border bg-card hover:bg-accent cursor-pointer text-xs">
+                          <Upload className="h-3.5 w-3.5" /> رفع
+                          <input type="file" accept="application/pdf,image/*" className="hidden" onChange={async (e) => {
+                            const file = e.target.files?.[0]; if (!file) return;
+                            const path = `${s.id}/${Date.now()}-${file.name}`;
+                            const { error } = await supabase.storage.from("final-certificates").upload(path, file, { upsert: true });
+                            if (error) { toast.error("فشل رفع الملف"); return; }
+                            const { data } = supabase.storage.from("final-certificates").getPublicUrl(path);
+                            await updateStudent(s.id, { final_certificate_url: data.publicUrl, final_certificate_status: "issued" });
+                            toast.success("تم رفع الشهادة");
+                          }} />
+                        </label>
+                        {s.final_certificate_url && (
+                          <a href={s.final_certificate_url} target="_blank" rel="noopener noreferrer" className="text-[11px] rounded-full bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 hover:bg-primary/15">عرض</a>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
-                {!students.length && (<tr><td colSpan={3} className="p-12 text-center text-muted-foreground">لا يوجد طلاب</td></tr>)}
+                {!students.length && (<tr><td colSpan={4} className="p-12 text-center text-muted-foreground">لا يوجد طلاب</td></tr>)}
               </tbody>
             </table>
           </div>
