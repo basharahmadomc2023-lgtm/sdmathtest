@@ -21,7 +21,7 @@ function TrainerProfilePage() {
     (async () => {
       const { data } = await supabase
         .from("trainers")
-        .select("full_name,membership_number,residence,profile_image_url,training_levels,achievements,awards,profile_visibility")
+        .select("full_name,membership_number,residence,profile_image_url,training_levels,achievements,awards,profile_visibility,years_experience,students_trained,competitions")
         .eq("membership_number", membershipNumber)
         .eq("profile_visibility", "approved")
         .maybeSingle();
