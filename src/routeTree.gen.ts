@@ -32,6 +32,7 @@ import { Route as ExamsIdResultRouteImport } from './routes/exams.$id.result'
 import { Route as AdminTrainersTrainerIdRouteImport } from './routes/admin.trainers.$trainerId'
 import { Route as AdminResultsAttemptIdRouteImport } from './routes/admin.results.$attemptId'
 import { Route as AdminExamsNewRouteImport } from './routes/admin.exams.new'
+import { Route as AdminTrainersTrainerIdSubscribersRouteImport } from './routes/admin.trainers.$trainerId.subscribers'
 
 const TrainerLoginRoute = TrainerLoginRouteImport.update({
   id: '/trainer-login',
@@ -148,6 +149,12 @@ const AdminExamsNewRoute = AdminExamsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => AdminExamsRoute,
 } as any)
+const AdminTrainersTrainerIdSubscribersRoute =
+  AdminTrainersTrainerIdSubscribersRouteImport.update({
+    id: '/subscribers',
+    path: '/subscribers',
+    getParentRoute: () => AdminTrainersTrainerIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -170,9 +177,10 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/admin/exams/new': typeof AdminExamsNewRoute
   '/admin/results/$attemptId': typeof AdminResultsAttemptIdRoute
-  '/admin/trainers/$trainerId': typeof AdminTrainersTrainerIdRoute
+  '/admin/trainers/$trainerId': typeof AdminTrainersTrainerIdRouteWithChildren
   '/exams/$id/result': typeof ExamsIdResultRoute
   '/exams/$id/take': typeof ExamsIdTakeRoute
+  '/admin/trainers/$trainerId/subscribers': typeof AdminTrainersTrainerIdSubscribersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -195,9 +203,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/admin/exams/new': typeof AdminExamsNewRoute
   '/admin/results/$attemptId': typeof AdminResultsAttemptIdRoute
-  '/admin/trainers/$trainerId': typeof AdminTrainersTrainerIdRoute
+  '/admin/trainers/$trainerId': typeof AdminTrainersTrainerIdRouteWithChildren
   '/exams/$id/result': typeof ExamsIdResultRoute
   '/exams/$id/take': typeof ExamsIdTakeRoute
+  '/admin/trainers/$trainerId/subscribers': typeof AdminTrainersTrainerIdSubscribersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -221,9 +230,10 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/admin/exams/new': typeof AdminExamsNewRoute
   '/admin/results/$attemptId': typeof AdminResultsAttemptIdRoute
-  '/admin/trainers/$trainerId': typeof AdminTrainersTrainerIdRoute
+  '/admin/trainers/$trainerId': typeof AdminTrainersTrainerIdRouteWithChildren
   '/exams/$id/result': typeof ExamsIdResultRoute
   '/exams/$id/take': typeof ExamsIdTakeRoute
+  '/admin/trainers/$trainerId/subscribers': typeof AdminTrainersTrainerIdSubscribersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -251,6 +261,7 @@ export interface FileRouteTypes {
     | '/admin/trainers/$trainerId'
     | '/exams/$id/result'
     | '/exams/$id/take'
+    | '/admin/trainers/$trainerId/subscribers'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/admin/trainers/$trainerId'
     | '/exams/$id/result'
     | '/exams/$id/take'
+    | '/admin/trainers/$trainerId/subscribers'
   id:
     | '__root__'
     | '/'
@@ -301,6 +313,7 @@ export interface FileRouteTypes {
     | '/admin/trainers/$trainerId'
     | '/exams/$id/result'
     | '/exams/$id/take'
+    | '/admin/trainers/$trainerId/subscribers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -487,6 +500,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminExamsNewRouteImport
       parentRoute: typeof AdminExamsRoute
     }
+    '/admin/trainers/$trainerId/subscribers': {
+      id: '/admin/trainers/$trainerId/subscribers'
+      path: '/subscribers'
+      fullPath: '/admin/trainers/$trainerId/subscribers'
+      preLoaderRoute: typeof AdminTrainersTrainerIdSubscribersRouteImport
+      parentRoute: typeof AdminTrainersTrainerIdRoute
+    }
   }
 }
 
@@ -525,12 +545,27 @@ const AdminExamsRouteWithChildren = AdminExamsRoute._addFileChildren(
   AdminExamsRouteChildren,
 )
 
+interface AdminTrainersTrainerIdRouteChildren {
+  AdminTrainersTrainerIdSubscribersRoute: typeof AdminTrainersTrainerIdSubscribersRoute
+}
+
+const AdminTrainersTrainerIdRouteChildren: AdminTrainersTrainerIdRouteChildren =
+  {
+    AdminTrainersTrainerIdSubscribersRoute:
+      AdminTrainersTrainerIdSubscribersRoute,
+  }
+
+const AdminTrainersTrainerIdRouteWithChildren =
+  AdminTrainersTrainerIdRoute._addFileChildren(
+    AdminTrainersTrainerIdRouteChildren,
+  )
+
 interface AdminTrainersRouteChildren {
-  AdminTrainersTrainerIdRoute: typeof AdminTrainersTrainerIdRoute
+  AdminTrainersTrainerIdRoute: typeof AdminTrainersTrainerIdRouteWithChildren
 }
 
 const AdminTrainersRouteChildren: AdminTrainersRouteChildren = {
-  AdminTrainersTrainerIdRoute: AdminTrainersTrainerIdRoute,
+  AdminTrainersTrainerIdRoute: AdminTrainersTrainerIdRouteWithChildren,
 }
 
 const AdminTrainersRouteWithChildren = AdminTrainersRoute._addFileChildren(
@@ -560,3 +595,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
