@@ -28,7 +28,7 @@ function AdminTrainers() {
   const [list, setList] = useState<any[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ full_name: "", membership_number: "", phone: "", residence: "", status: "Active" });
+  const [form, setForm] = useState({ full_name: "", membership_number: "", phone: "", residence: "", city: "", status: "Active" });
 
   const load = async () => {
     const { data } = await supabase.from("trainers").select("*").order("created_at", { ascending: false });
@@ -56,12 +56,25 @@ function AdminTrainers() {
       membership_number: form.membership_number.trim(),
       phone: form.phone || null,
       residence: form.residence || null,
+      city: form.city || null,
       status: form.status,
     });
-    if (error) { toast.error(error.code === "23505" ? "رقم العضوية مستخدم مسبقاً" : "حدث خطأ"); return; }
-    toast.success("تم إنشاء حساب المدرب");
+    if (error) {
+      console.error("Trainer save error:", error);
+      if (error.code === "23505") {
+        toast.error("رقم العضوية مستخدم مسبقاً");
+      } else if (error.code === "42501") {
+        toast.error("لا توجد صلاحية لإضافة المدرب، تحقق من إعدادات قاعدة البيانات");
+      } else if (error.message?.includes("JWT") || error.message?.includes("auth")) {
+        toast.error("خطأ في الاتصال بقاعدة البيانات — تحقق من مفتاح Supabase");
+      } else {
+        toast.error(`حدث خطأ: ${error.message || "غير معروف"}`);
+      }
+      return;
+    }
+    toast.success("تم إنشاء حساب المدرب بنجاح");
     setOpen(false);
-    setForm({ full_name: "", membership_number: "", phone: "", residence: "", status: "Active" });
+    setForm({ full_name: "", membership_number: "", phone: "", residence: "", city: "", status: "Active" });
     load();
   };
 
@@ -131,6 +144,8 @@ function AdminTrainers() {
                   <Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} dir="ltr" /></div>
                 <div className="space-y-1.5"><Label>مكان السكن</Label>
                   <Input value={form.residence} onChange={(e) => setForm({ ...form, residence: e.target.value })} /></div>
+                <div className="space-y-1.5"><Label>المدينة</Label>
+                  <Input value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} /></div>
                 <div className="space-y-1.5"><Label>الحالة</Label>
                   <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>

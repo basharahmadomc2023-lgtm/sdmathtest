@@ -72,6 +72,7 @@ function Dashboard() {
       membership_number: trainer.membership_number,
       phone: trainer.phone,
       residence: trainer.residence,
+      city: trainer.city,
       profile_image_url: trainer.profile_image_url,
       training_levels: trainer.training_levels,
       achievements: trainer.achievements,

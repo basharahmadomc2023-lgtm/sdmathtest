@@ -69,6 +69,7 @@ function EditTrainer() {
       membership_number: trainer.membership_number,
       phone: trainer.phone,
       residence: trainer.residence,
+      city: trainer.city,
       profile_image_url: trainer.profile_image_url,
       status: trainer.status,
       training_levels: trainer.training_levels,
@@ -128,6 +129,8 @@ function EditTrainer() {
               <Input value={trainer.phone ?? ""} onChange={(e) => setTrainer({ ...trainer, phone: e.target.value })} dir="ltr" className="h-11 rounded-xl" /></div>
             <div className="space-y-1.5"><Label>مكان السكن</Label>
               <Input value={trainer.residence ?? ""} onChange={(e) => setTrainer({ ...trainer, residence: e.target.value })} className="h-11 rounded-xl" /></div>
+            <div className="space-y-1.5"><Label>المدينة</Label>
+              <Input value={trainer.city ?? ""} onChange={(e) => setTrainer({ ...trainer, city: e.target.value })} className="h-11 rounded-xl" /></div>
             <div className="space-y-1.5"><Label>الحالة</Label>
               <Select value={trainer.status} onValueChange={(v) => setTrainer({ ...trainer, status: v })}>
                 <SelectTrigger className="h-11 rounded-xl"><SelectValue /></SelectTrigger>
