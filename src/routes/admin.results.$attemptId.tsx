@@ -30,7 +30,8 @@ function Result() {
 
   const approve = async () => {
     if (cert) return;
-    const certNumber = `SDM-${Date.now().toString().slice(-8)}`;
+    const bytes = crypto.getRandomValues(new Uint8Array(4));
+    const certNumber = `SDM-${Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('')}`;
     await supabase.from("attempts").update({ approved: true }).eq("id", attemptId);
     const { data: c } = await supabase.from("certificates").insert({ attempt_id: attemptId, cert_number: certNumber }).select().single();
     setCert(c);
@@ -47,7 +48,7 @@ function Result() {
       score: `${data.correct_count} / ${total} (${pct}%)`,
       date: new Date(cert.issued_at).toLocaleDateString("en-GB"),
       certNumber: cert.cert_number,
-      verifyUrl: `${window.location.origin}/certificate/${cert.cert_number}`,
+      verifyUrl: `${window.location.origin}/certificate/${encodeURIComponent(cert.cert_number)}`,
     });
   };
 

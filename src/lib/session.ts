@@ -59,8 +59,8 @@ export const trainerSession = {
   clear() { localStorage.removeItem(TRAINER_KEY); },
 };
 
-export const ADMIN_USERNAME = "SDMATH";
-export const ADMIN_PASSWORD = "2386831";
+export const ADMIN_USERNAME = import.meta.env.VITE_ADMIN_USERNAME || "";
+export const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || "";
 
 // Validates Arabic full name with exactly 3 parts
 export function isThreePartName(name: string): boolean {
