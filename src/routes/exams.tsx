@@ -23,10 +23,17 @@ function ExamsList() {
     const session = memberSession.get();
     if (!session) { navigate({ to: "/login" }); return; }
     (async () => {
+      const { data: allowedRows } = await supabase
+        .from("subscriber_allowed_exams")
+        .select("exam_id")
+        .eq("member_id", session.id);
+      const allowedIds = (allowedRows ?? []).map((r: any) => r.exam_id);
+      if (!allowedIds.length) { setExams([]); setLoading(false); return; }
       const { data: examsData } = await supabase
         .from("exams")
         .select("id, title, description, level, total_time")
         .eq("is_published", true)
+        .in("id", allowedIds)
         .order("created_at", { ascending: false });
       const ids = (examsData ?? []).map((e) => e.id);
       const counts: Record<string, number> = {};
