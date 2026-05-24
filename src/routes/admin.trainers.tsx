@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Pencil, Trash2, IdCard, Plus, CircleCheck as CheckCircle2, Circle as XCircle, Clock, Eye } from "lucide-react";
+import { Pencil, Trash2, IdCard, Plus, CircleCheck as CheckCircle2, Circle as XCircle, Clock, Eye, Users } from "lucide-react";
 import { generateTrainerCardPDF } from "@/lib/trainer-card";
 import { isThreePartName, THREE_PART_NAME_MSG } from "@/lib/session";
 import {
