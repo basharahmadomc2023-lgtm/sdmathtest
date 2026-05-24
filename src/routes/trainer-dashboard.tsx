@@ -315,19 +315,36 @@ function Dashboard() {
               <thead className="bg-muted/60">
                 <tr className="text-right">
                   <th className="p-4 font-semibold">اسم الطالب</th>
-                  <th className="p-4 font-semibold">عدد أوراق العمل المنجزة</th>
-                  <th className="p-4 font-semibold">إصدار الشهادة النهائية</th>
+                  <th className="p-4 font-semibold">الاختبارات المنجزة</th>
+                  <th className="p-4 font-semibold">العلامات</th>
+                  <th className="p-4 font-semibold">الشهادة النهائية</th>
                 </tr>
               </thead>
               <tbody>
                 {students.map((s) => (
-                  <tr key={s.id} className="border-t border-border/60">
+                  <tr key={s.id} className="border-t border-border/60 align-top">
                     <td className="p-4 font-medium">{s.name}</td>
-                    <td className="p-4 text-muted-foreground">{s.completed_worksheets_count ?? 0}</td>
-                    <td className="p-4">{certBadge(s.final_certificate_status ?? "pending")}</td>
+                    <td className="p-4 text-muted-foreground">{s.completed_exams ?? 0}</td>
+                    <td className="p-4">
+                      {s.exam_scores?.length ? (
+                        <div className="flex flex-wrap gap-1.5">
+                          {s.exam_scores.map((sc: number, i: number) => (
+                            <span key={i} className="text-[11px] rounded-full bg-primary/10 text-primary border border-primary/20 px-2.5 py-1">{sc}%</span>
+                          ))}
+                        </div>
+                      ) : <span className="text-xs text-muted-foreground">—</span>}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {certBadge(s.final_certificate_status ?? "pending")}
+                        {s.final_certificate_url && (
+                          <a href={s.final_certificate_url} target="_blank" rel="noopener noreferrer" className="text-[11px] rounded-full bg-primary/10 text-primary border border-primary/20 px-2.5 py-1 hover:bg-primary/15">عرض الشهادة</a>
+                        )}
+                      </div>
+                    </td>
                   </tr>
                 ))}
-                {!students.length && (<tr><td colSpan={3} className="p-12 text-center text-muted-foreground">لا يوجد طلاب مرتبطين بعد</td></tr>)}
+                {!students.length && (<tr><td colSpan={4} className="p-12 text-center text-muted-foreground">لا يوجد طلاب مرتبطين بعد</td></tr>)}
               </tbody>
             </table>
           </div>
@@ -335,9 +352,21 @@ function Dashboard() {
             {students.map((s) => (
               <div key={s.id} className="border border-border/60 rounded-2xl p-4">
                 <p className="font-semibold mb-2">{s.name}</p>
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>أوراق منجزة: {s.completed_worksheets_count ?? 0}</span>
+                <div className="text-xs text-muted-foreground mb-2">
+                  الاختبارات المنجزة: {s.completed_exams ?? 0}
+                </div>
+                {s.exam_scores?.length ? (
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {s.exam_scores.map((sc: number, i: number) => (
+                      <span key={i} className="text-[11px] rounded-full bg-primary/10 text-primary border border-primary/20 px-2.5 py-1">{sc}%</span>
+                    ))}
+                  </div>
+                ) : null}
+                <div className="flex items-center justify-between flex-wrap gap-2">
                   {certBadge(s.final_certificate_status ?? "pending")}
+                  {s.final_certificate_url && (
+                    <a href={s.final_certificate_url} target="_blank" rel="noopener noreferrer" className="text-[11px] text-primary underline">عرض الشهادة</a>
+                  )}
                 </div>
               </div>
             ))}
