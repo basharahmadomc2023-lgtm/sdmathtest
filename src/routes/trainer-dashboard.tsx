@@ -76,7 +76,16 @@ function Dashboard() {
       training_levels: trainer.training_levels,
       achievements: trainer.achievements,
       awards: trainer.awards,
-    }).eq("id", trainer.id);
+      years_experience: trainer.years_experience ? Number(trainer.years_experience) : null,
+      students_trained: trainer.students_trained ? Number(trainer.students_trained) : null,
+      competitions: trainer.competitions,
+    } as any).eq("id", trainer.id);
+    setSaving(false);
+    if (error) { toast.error("حدث خطأ أثناء الحفظ"); return; }
+    trainerSession.set({ id: trainer.id, full_name: trainer.full_name.trim(), membership_number: trainer.membership_number });
+    toast.success("تم حفظ المعلومات");
+    load();
+  };
     setSaving(false);
     if (error) { toast.error("حدث خطأ أثناء الحفظ"); return; }
     trainerSession.set({ id: trainer.id, full_name: trainer.full_name.trim(), membership_number: trainer.membership_number });
