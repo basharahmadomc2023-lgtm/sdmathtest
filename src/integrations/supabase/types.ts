@@ -302,6 +302,8 @@ export type Database = {
       }
       trainers: {
         Row: {
+          achievements: string | null
+          awards: string | null
           competitions: string | null
           created_at: string
           full_name: string
@@ -309,12 +311,16 @@ export type Database = {
           membership_number: string
           phone: string | null
           profile_image_url: string | null
+          profile_visibility: string
           residence: string | null
           status: string
           students_trained: number | null
+          training_levels: string | null
           years_experience: number | null
         }
         Insert: {
+          achievements?: string | null
+          awards?: string | null
           competitions?: string | null
           created_at?: string
           full_name: string
@@ -322,12 +328,16 @@ export type Database = {
           membership_number: string
           phone?: string | null
           profile_image_url?: string | null
+          profile_visibility?: string
           residence?: string | null
           status?: string
           students_trained?: number | null
+          training_levels?: string | null
           years_experience?: number | null
         }
         Update: {
+          achievements?: string | null
+          awards?: string | null
           competitions?: string | null
           created_at?: string
           full_name?: string
@@ -335,9 +345,11 @@ export type Database = {
           membership_number?: string
           phone?: string | null
           profile_image_url?: string | null
+          profile_visibility?: string
           residence?: string | null
           status?: string
           students_trained?: number | null
+          training_levels?: string | null
           years_experience?: number | null
         }
         Relationships: []
